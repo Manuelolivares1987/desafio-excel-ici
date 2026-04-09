@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Desafío Excel - Analista ICI</title>
+<title>Desafio Excel - Analista ICI</title>
 <style>
   :root {
     --primary: #1a3a5c;
@@ -15,251 +15,126 @@
     --card: #ffffff;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
-    color: #333;
-    min-height: 100vh;
-  }
-  .header {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white;
-    padding: 20px 30px;
-    text-align: center;
-  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: #333; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 20px 30px; text-align: center; }
   .header h1 { font-size: 1.6rem; margin-bottom: 5px; }
   .header p { opacity: 0.85; font-size: 0.95rem; }
-  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  .container { max-width: 950px; margin: 0 auto; padding: 20px; }
 
-  /* Registro grupo */
-  .group-register {
-    background: var(--card);
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  }
+  /* Registro */
+  .group-register { background: var(--card); border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
   .group-register h2 { color: var(--primary); margin-bottom: 15px; }
   .form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
   .form-row label { font-weight: 600; min-width: 120px; display: flex; align-items: center; }
-  .form-row input, .form-row select {
-    flex: 1; padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px;
-    font-size: 1rem; min-width: 200px;
-  }
+  .form-row input, .form-row select { flex: 1; padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; min-width: 200px; }
   .form-row input:focus, .form-row select:focus { border-color: var(--accent); outline: none; }
 
   /* Tabs */
   .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-  .tab-btn {
-    flex: 1; padding: 14px; border: none; border-radius: 10px;
-    font-size: 1rem; font-weight: 700; cursor: pointer;
-    transition: all 0.3s;
-  }
+  .tab-btn { flex: 1; padding: 14px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; }
   .tab-btn.active { background: var(--accent); color: white; transform: scale(1.02); }
   .tab-btn:not(.active) { background: #dde4ed; color: var(--primary); }
-  .tab-btn:hover:not(.active) { background: #c5d0de; }
 
   /* Caso */
   .caso { display: none; }
   .caso.active { display: block; }
-  .caso-card {
-    background: var(--card);
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  }
-  .caso-card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.15rem; }
-  .context-box {
-    background: #eaf2fb;
-    border-left: 4px solid var(--accent);
-    padding: 15px 18px;
-    border-radius: 0 8px 8px 0;
-    margin-bottom: 18px;
-    line-height: 1.6;
-  }
+  .caso-card { background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+  .caso-card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; }
+  .context-box { background: #eaf2fb; border-left: 4px solid var(--accent); padding: 15px 18px; border-radius: 0 8px 8px 0; margin-bottom: 18px; line-height: 1.6; font-size: 0.95rem; }
 
-  /* Tablas de datos */
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 15px 0;
-    font-size: 0.9rem;
-  }
-  .data-table th {
-    background: var(--primary);
-    color: white;
-    padding: 10px 12px;
-    text-align: left;
-  }
-  .data-table td {
-    padding: 8px 12px;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .data-table tr:nth-child(even) { background: #f8f9fa; }
-  .data-table tr:hover { background: #e8f0fe; }
+  /* Excel Tables */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 12px 0; }
+  .excel-table { border-collapse: collapse; font-size: 0.85rem; min-width: 100%; }
+  .excel-table th, .excel-table td { padding: 7px 10px; border: 1px solid #c0c0c0; text-align: center; white-space: nowrap; }
+  .excel-table .col-header { background: #e8eaed; color: #444; font-weight: 700; font-size: 0.8rem; min-width: 50px; }
+  .excel-table .row-header { background: #e8eaed; color: #444; font-weight: 700; width: 30px; min-width: 30px; }
+  .excel-table .cell { background: white; text-align: right; }
+  .excel-table .cell-text { text-align: left; }
+  .table-label { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin: 15px 0 5px; }
+  .table-note { font-size: 0.8rem; color: #666; margin-bottom: 5px; font-style: italic; }
 
   /* Preguntas */
-  .pregunta {
-    background: #fafbfc;
-    border: 2px solid #e0e5ec;
-    border-radius: 10px;
-    padding: 18px;
-    margin-bottom: 14px;
-    transition: border-color 0.3s;
-  }
+  .pregunta { background: #fafbfc; border: 2px solid #e0e5ec; border-radius: 10px; padding: 16px; margin-bottom: 14px; transition: border-color 0.3s; }
   .pregunta:focus-within { border-color: var(--accent); }
-  .pregunta-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+  .pregunta-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .pregunta-num { background: var(--accent); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+  .pregunta-text { font-weight: 600; color: var(--primary); font-size: 0.95rem; }
+  .hint { color: #666; font-size: 0.82rem; margin-bottom: 8px; font-style: italic; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; }
+  .badge-formula { background: #e8f0fe; color: var(--accent); }
+
+  /* Formula input */
+  .formula-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
+  .formula-row label { font-size: 0.82rem; color: #555; font-weight: 600; min-width: 65px; }
+  .formula-input {
+    flex: 1; padding: 10px 12px; border: 2px solid #ccc; border-radius: 8px;
+    font-family: 'Consolas', 'Courier New', monospace; font-size: 0.92rem;
+    min-width: 180px; background: #fff;
   }
-  .pregunta-num {
-    background: var(--accent);
-    color: white;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 0.9rem;
-    flex-shrink: 0;
+  .formula-input:focus { border-color: var(--accent); outline: none; background: #fffff0; }
+  .btn-calc {
+    padding: 10px 16px; border: none; border-radius: 8px; background: var(--accent);
+    color: white; font-weight: 700; cursor: pointer; font-size: 0.85rem; white-space: nowrap;
   }
-  .pregunta-text { font-weight: 600; color: var(--primary); }
-  .hint { color: #666; font-size: 0.85rem; margin-bottom: 8px; font-style: italic; }
-  .answer-group { display: flex; gap: 10px; flex-wrap: wrap; }
-  .answer-group label { font-size: 0.85rem; color: #555; min-width: 80px; display: flex; align-items: center; }
-  .answer-input {
-    flex: 1; padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px;
-    font-family: 'Consolas', 'Courier New', monospace; font-size: 0.95rem;
-    min-width: 150px;
+  .btn-calc:hover { background: #2471a3; }
+  .result-display {
+    padding: 8px 14px; border-radius: 8px; font-family: 'Consolas', monospace;
+    font-size: 0.95rem; font-weight: 700; min-height: 38px; display: flex; align-items: center;
+    border: 2px solid #e0e0e0; background: #f8f9fa;
   }
-  .answer-input:focus { border-color: var(--accent); outline: none; }
-  .answer-input.correct { border-color: var(--success); background: #eafaf1; }
-  .answer-input.incorrect { border-color: var(--danger); background: #fdf0ef; }
+  .result-display.calculated { background: #eafaf1; border-color: var(--success); color: var(--success); }
+  .result-display.error { background: #fdf0ef; border-color: var(--danger); color: var(--danger); font-size: 0.8rem; }
+  .result-display.correct { background: #d5f5e3; border-color: #1e8449; color: #1e8449; }
+  .result-display.incorrect { background: #fadbd8; border-color: #c0392b; color: #c0392b; }
 
   /* Botones */
-  .btn {
-    padding: 14px 28px;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.05rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
+  .btn { padding: 14px 28px; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.3s; }
   .btn-primary { background: var(--accent); color: white; }
-  .btn-primary:hover { background: #2471a3; transform: translateY(-1px); }
+  .btn-primary:hover { background: #2471a3; }
   .btn-success { background: var(--success); color: white; }
   .btn-success:hover { background: #219a52; }
+  .btn[disabled] { background: #bdc3c7; color: #7f8c8d; cursor: not-allowed; opacity: 0.7; }
+  .btn[disabled]:hover { transform: none; }
   .btn-warning { background: var(--warning); color: white; }
-  .btn-warning:hover { background: #d68910; }
-  .btn-whatsapp { background: #25D366; color: white; font-size: 1.1rem; padding: 16px 30px; }
-  .btn-whatsapp:hover { background: #1ebe57; transform: translateY(-2px); }
+  .btn-whatsapp { background: #25D366; color: white; font-size: 1rem; padding: 14px 24px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+  .btn-whatsapp:hover { transform: translateY(-1px); }
   .btn-block { width: 100%; }
 
   /* Resultado */
-  .result-panel {
-    display: none;
-    background: linear-gradient(135deg, var(--primary), #2c3e50);
-    color: white;
-    border-radius: 12px;
-    padding: 30px;
-    text-align: center;
-    margin-top: 20px;
-  }
+  .result-panel { display: none; background: linear-gradient(135deg, var(--primary), #2c3e50); color: white; border-radius: 12px; padding: 30px; text-align: center; margin-top: 20px; }
   .result-panel.show { display: block; }
-  .result-code {
-    font-family: 'Consolas', monospace;
-    font-size: 2.5rem;
-    font-weight: 900;
-    letter-spacing: 6px;
-    background: rgba(255,255,255,0.15);
-    padding: 15px 30px;
-    border-radius: 10px;
-    margin: 15px 0;
-    display: inline-block;
-  }
-  .result-score { font-size: 1.3rem; margin: 10px 0; }
-  .result-detail { font-size: 0.9rem; opacity: 0.8; }
+  .result-code { font-family: 'Consolas', monospace; font-size: 2.2rem; font-weight: 900; letter-spacing: 5px; background: rgba(255,255,255,0.15); padding: 12px 25px; border-radius: 10px; margin: 12px 0; display: inline-block; }
+  .result-score { font-size: 1.2rem; margin: 10px 0; }
 
-  /* Modo profesor */
-  .prof-mode {
-    display: none;
-    background: var(--card);
-    border-radius: 12px;
-    padding: 25px;
-    margin-top: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  }
+  /* Prof */
+  .prof-toggle { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; width: 48px; height: 48px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 100; }
+  .prof-mode { display: none; background: var(--card); border-radius: 12px; padding: 25px; margin-top: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
   .prof-mode.show { display: block; }
   .prof-input { display: flex; gap: 10px; margin-bottom: 15px; }
-  .prof-input input { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 1.2rem; letter-spacing: 3px; text-transform: uppercase; }
+  .prof-input input { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; }
   .prof-result { padding: 15px; border-radius: 8px; margin-top: 10px; }
   .prof-result.valid { background: #eafaf1; border: 2px solid var(--success); }
   .prof-result.invalid { background: #fdf0ef; border: 2px solid var(--danger); }
-
-  /* Toggle profesor */
-  .prof-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    width: 50px; height: 50px;
-    border-radius: 50%;
-    font-size: 1.3rem;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    z-index: 100;
-    transition: transform 0.3s;
-  }
-  .prof-toggle:hover { transform: scale(1.1); }
-
-  .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 700;
-  }
-  .badge-formula { background: #e8f0fe; color: var(--accent); }
-  .badge-result { background: #eafaf1; color: var(--success); }
-
-  .section-title {
-    font-size: 1.1rem;
-    color: var(--primary);
-    margin: 20px 0 10px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #e0e5ec;
-  }
-
-  /* Scroll horizontal para tablas en celular */
-  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .section-title { font-size: 1rem; color: var(--primary); margin: 18px 0 8px; padding-bottom: 6px; border-bottom: 2px solid #e0e5ec; }
 
   @media (max-width: 600px) {
     .container { padding: 10px; }
     .form-row { flex-direction: column; }
-    .form-row label { min-width: auto; }
     .form-row input, .form-row select { min-width: 0; width: 100%; }
-    .answer-group { flex-direction: column; }
-    .answer-group label { min-width: auto; }
-    .answer-input { min-width: 0; width: 100%; font-size: 0.9rem; }
     .header h1 { font-size: 1.2rem; }
-    .header p { font-size: 0.8rem; }
-    .caso-card { padding: 15px; }
-    .caso-card h3 { font-size: 1rem; }
-    .context-box { padding: 12px; font-size: 0.9rem; }
-    .data-table { font-size: 0.78rem; }
-    .data-table th, .data-table td { padding: 6px 8px; white-space: nowrap; }
+    .caso-card { padding: 14px; }
+    .context-box { padding: 10px; font-size: 0.85rem; }
+    .excel-table { font-size: 0.75rem; }
+    .excel-table th, .excel-table td { padding: 5px 6px; }
     .tabs { flex-direction: column; gap: 6px; }
-    .tab-btn { padding: 12px; font-size: 0.9rem; }
-    .pregunta { padding: 14px; }
-    .pregunta-text { font-size: 0.9rem; }
-    .hint { font-size: 0.8rem; }
-    .result-code { font-size: 1.6rem; letter-spacing: 3px; padding: 12px 20px; }
-    .url-display { font-size: 1rem; }
-    .btn { padding: 12px 20px; font-size: 0.95rem; }
+    .tab-btn { padding: 11px; font-size: 0.9rem; }
+    .pregunta { padding: 12px; }
+    .pregunta-text { font-size: 0.88rem; }
+    .formula-row { flex-direction: column; }
+    .formula-row label { min-width: auto; }
+    .formula-input { min-width: 0; width: 100%; }
+    .result-code { font-size: 1.5rem; letter-spacing: 3px; }
+    .btn, .btn-whatsapp { padding: 12px 18px; font-size: 0.95rem; }
   }
 </style>
 </head>
@@ -290,13 +165,13 @@
     </div>
     <div class="form-row">
       <label>Integrantes:</label>
-      <input type="text" id="integrantes" placeholder="Apellidos separados por coma (ej: Perez, Lopez, Diaz, Soto)">
+      <input type="text" id="integrantes" placeholder="Apellidos separados por coma">
     </div>
     <br>
     <button class="btn btn-primary btn-block" onclick="startChallenge()">Comenzar Desafio</button>
   </div>
 
-  <!-- CONTENIDO PRINCIPAL (oculto hasta registro) -->
+  <!-- CONTENIDO PRINCIPAL -->
   <div id="mainContent" style="display:none;">
 
     <div class="tabs">
@@ -309,39 +184,49 @@
       <div class="caso-card">
         <h3>Caso 1: Analista de Produccion &mdash; Minera Cerro Brillante</h3>
         <div class="context-box">
-          <strong>Contexto:</strong> Eres analista de produccion en <em>Minera Cerro Brillante</em>, ubicada en la Region de Coquimbo.
-          Tu jefe, el Gerente de Operaciones, necesita un reporte urgente del primer trimestre 2026.
-          Tienes los siguientes datos en tu planilla Excel y debes generar los calculos y reportes solicitados.
+          <strong>Contexto:</strong> Eres analista de produccion en <em>Minera Cerro Brillante</em>, Region de Coquimbo.
+          Tu jefe necesita un reporte urgente del Q1 2026. Tienes los datos en una hoja Excel.
+          Las tablas de abajo representan tu hoja de calculo con sus filas y columnas reales.
+          <strong>Escribe las formulas usando las referencias de celda que ves (ej: B2, C7, etc).</strong>
         </div>
 
-        <h4 class="section-title">Tabla 1: Produccion mensual por mineral (toneladas)</h4>
+        <!-- TABLA 1: Produccion (filas 1-4) -->
+        <p class="table-label">Tabla de Produccion (toneladas)</p>
+        <p class="table-note">Filas 1-4 de tu hoja Excel</p>
         <div class="table-scroll">
-        <table class="data-table">
-          <tr><th>Mes</th><th>Cobre</th><th>Oro (kg)</th><th>Molibdeno</th><th>Plata (kg)</th></tr>
-          <tr><td>Enero</td><td>12,500</td><td>85</td><td>340</td><td>1,200</td></tr>
-          <tr><td>Febrero</td><td>11,800</td><td>92</td><td>310</td><td>1,350</td></tr>
-          <tr><td>Marzo</td><td>13,200</td><td>78</td><td>365</td><td>1,100</td></tr>
+        <table class="excel-table">
+          <tr><th class="row-header"></th><th class="col-header">A</th><th class="col-header">B</th><th class="col-header">C</th><th class="col-header">D</th><th class="col-header">E</th></tr>
+          <tr><td class="row-header">1</td><td class="cell-text"><strong>Mes</strong></td><td class="cell-text"><strong>Cobre</strong></td><td class="cell-text"><strong>Oro (kg)</strong></td><td class="cell-text"><strong>Molibdeno</strong></td><td class="cell-text"><strong>Plata (kg)</strong></td></tr>
+          <tr><td class="row-header">2</td><td class="cell-text">Enero</td><td class="cell">12500</td><td class="cell">85</td><td class="cell">340</td><td class="cell">1200</td></tr>
+          <tr><td class="row-header">3</td><td class="cell-text">Febrero</td><td class="cell">11800</td><td class="cell">92</td><td class="cell">310</td><td class="cell">1350</td></tr>
+          <tr><td class="row-header">4</td><td class="cell-text">Marzo</td><td class="cell">13200</td><td class="cell">78</td><td class="cell">365</td><td class="cell">1100</td></tr>
         </table>
         </div>
 
-        <h4 class="section-title">Tabla 2: Precios de venta por unidad (USD)</h4>
+        <!-- TABLA 2: Precios (filas 6-10) -->
+        <p class="table-label">Tabla de Precios de Venta (USD)</p>
+        <p class="table-note">Filas 6-10 de tu hoja Excel</p>
         <div class="table-scroll">
-        <table class="data-table">
-          <tr><th>Codigo Mineral</th><th>Mineral</th><th>Precio USD/ton</th><th>Categoria</th></tr>
-          <tr><td>CU-01</td><td>Cobre</td><td>8,500</td><td>Base</td></tr>
-          <tr><td>AU-01</td><td>Oro</td><td>62,000</td><td>Precioso</td></tr>
-          <tr><td>MO-01</td><td>Molibdeno</td><td>45,000</td><td>Especial</td></tr>
-          <tr><td>AG-01</td><td>Plata</td><td>780</td><td>Precioso</td></tr>
+        <table class="excel-table">
+          <tr><th class="row-header"></th><th class="col-header">A</th><th class="col-header">B</th><th class="col-header">C</th><th class="col-header">D</th></tr>
+          <tr><td class="row-header">6</td><td class="cell-text"><strong>Codigo</strong></td><td class="cell-text"><strong>Mineral</strong></td><td class="cell-text"><strong>Precio USD/ton</strong></td><td class="cell-text"><strong>Categoria</strong></td></tr>
+          <tr><td class="row-header">7</td><td class="cell-text">CU-01</td><td class="cell-text">Cobre</td><td class="cell">8500</td><td class="cell-text">Base</td></tr>
+          <tr><td class="row-header">8</td><td class="cell-text">AU-01</td><td class="cell-text">Oro</td><td class="cell">62000</td><td class="cell-text">Precioso</td></tr>
+          <tr><td class="row-header">9</td><td class="cell-text">MO-01</td><td class="cell-text">Molibdeno</td><td class="cell">45000</td><td class="cell-text">Especial</td></tr>
+          <tr><td class="row-header">10</td><td class="cell-text">AG-01</td><td class="cell-text">Plata</td><td class="cell">780</td><td class="cell-text">Precioso</td></tr>
         </table>
         </div>
 
-        <h4 class="section-title">Tabla 3: Costos operacionales mensuales (USD)</h4>
+        <!-- TABLA 3: Costos (filas 12-15) -->
+        <p class="table-label">Tabla de Costos Operacionales Mensuales (USD)</p>
+        <p class="table-note">Filas 12-15 de tu hoja Excel</p>
         <div class="table-scroll">
-        <table class="data-table">
-          <tr><th>Mes</th><th>Energia</th><th>Mano de Obra</th><th>Mantencion</th><th>Insumos</th></tr>
-          <tr><td>Enero</td><td>2,800,000</td><td>4,500,000</td><td>1,200,000</td><td>980,000</td></tr>
-          <tr><td>Febrero</td><td>2,650,000</td><td>4,500,000</td><td>1,350,000</td><td>1,020,000</td></tr>
-          <tr><td>Marzo</td><td>2,900,000</td><td>4,500,000</td><td>1,100,000</td><td>1,050,000</td></tr>
+        <table class="excel-table">
+          <tr><th class="row-header"></th><th class="col-header">A</th><th class="col-header">B</th><th class="col-header">C</th><th class="col-header">D</th><th class="col-header">E</th></tr>
+          <tr><td class="row-header">12</td><td class="cell-text"><strong>Mes</strong></td><td class="cell-text"><strong>Energia</strong></td><td class="cell-text"><strong>Mano Obra</strong></td><td class="cell-text"><strong>Mantencion</strong></td><td class="cell-text"><strong>Insumos</strong></td></tr>
+          <tr><td class="row-header">13</td><td class="cell-text">Enero</td><td class="cell">2800000</td><td class="cell">4500000</td><td class="cell">1200000</td><td class="cell">980000</td></tr>
+          <tr><td class="row-header">14</td><td class="cell-text">Febrero</td><td class="cell">2650000</td><td class="cell">4500000</td><td class="cell">1350000</td><td class="cell">1020000</td></tr>
+          <tr><td class="row-header">15</td><td class="cell-text">Marzo</td><td class="cell">2900000</td><td class="cell">4500000</td><td class="cell">1100000</td><td class="cell">1050000</td></tr>
         </table>
         </div>
       </div>
@@ -350,125 +235,103 @@
       <div class="caso-card">
         <h3>Preguntas &mdash; Caso 1</h3>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">1</span>
-            <span class="pregunta-text">Produccion total de Cobre en el trimestre (toneladas)</span>
-          </div>
-          <p class="hint">Formula requerida: SUMA &nbsp; <span class="badge badge-formula">SUMA</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c1p1">
+          <div class="pregunta-header"><span class="pregunta-num">1</span><span class="pregunta-text">Produccion total de Cobre en el trimestre (toneladas)</span></div>
+          <p class="hint">Suma las celdas de Cobre (columna B, filas 2 a 4) <span class="badge badge-formula">SUMA</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c1p1f" placeholder="=SUMA(...)">
+            <input type="text" class="formula-input" id="c1p1f" data-caso="1" placeholder="=SUMA(B2:B4)" onkeydown="if(event.key==='Enter')calcFormula('c1p1f')">
+            <button class="btn-calc" onclick="calcFormula('c1p1f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c1p1r" placeholder="Valor numerico">
+            <div class="result-display" id="c1p1r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">2</span>
-            <span class="pregunta-text">Ingreso total por venta de Cobre en Enero (USD)</span>
-          </div>
-          <p class="hint">Produccion x Precio &nbsp; <span class="badge badge-formula">MULTIPLICACION</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c1p2">
+          <div class="pregunta-header"><span class="pregunta-num">2</span><span class="pregunta-text">Ingreso total por venta de Cobre en Enero (USD)</span></div>
+          <p class="hint">Produccion Enero (B2) multiplicado por Precio Cobre (C7) <span class="badge badge-formula">MULTIPLICACION</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c1p2f" placeholder="=celda*celda">
+            <input type="text" class="formula-input" id="c1p2f" data-caso="1" placeholder="=B2*C7" onkeydown="if(event.key==='Enter')calcFormula('c1p2f')">
+            <button class="btn-calc" onclick="calcFormula('c1p2f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c1p2r" placeholder="Valor numerico">
+            <div class="result-display" id="c1p2r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">3</span>
-            <span class="pregunta-text">Costo operacional total de Febrero (USD)</span>
-          </div>
-          <p class="hint">Sumar todos los costos del mes &nbsp; <span class="badge badge-formula">SUMA</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c1p3">
+          <div class="pregunta-header"><span class="pregunta-num">3</span><span class="pregunta-text">Costo operacional total de Febrero (USD)</span></div>
+          <p class="hint">Suma todos los costos de Febrero (fila 14, columnas B a E) <span class="badge badge-formula">SUMA</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c1p3f" placeholder="=SUMA(...)">
+            <input type="text" class="formula-input" id="c1p3f" data-caso="1" placeholder="=SUMA(B14:E14)" onkeydown="if(event.key==='Enter')calcFormula('c1p3f')">
+            <button class="btn-calc" onclick="calcFormula('c1p3f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c1p3r" placeholder="Valor numerico">
+            <div class="result-display" id="c1p3r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">4</span>
-            <span class="pregunta-text">Usando BUSCARV, obtener el precio del Molibdeno buscando por codigo "MO-01"</span>
-          </div>
-          <p class="hint">Buscar en Tabla 2 &nbsp; <span class="badge badge-formula">BUSCARV</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c1p4">
+          <div class="pregunta-header"><span class="pregunta-num">4</span><span class="pregunta-text">Usando BUSCARV, obtener el precio del Molibdeno buscando el codigo "MO-01"</span></div>
+          <p class="hint">Buscar "MO-01" en la tabla de precios (A7:C10), devolver columna 3 <span class="badge badge-formula">BUSCARV</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c1p4f" placeholder="=BUSCARV(...)">
+            <input type="text" class="formula-input" id="c1p4f" data-caso="1" placeholder='=BUSCARV("MO-01";A7:C10;3;0)' onkeydown="if(event.key==='Enter')calcFormula('c1p4f')">
+            <button class="btn-calc" onclick="calcFormula('c1p4f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c1p4r" placeholder="Valor numerico">
+            <div class="result-display" id="c1p4r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">5</span>
-            <span class="pregunta-text">Margen operacional de Enero: Ingresos totales (todos los minerales) menos Costos totales de Enero</span>
-          </div>
-          <p class="hint">Calcular ingreso por cada mineral, sumar, y restar costos &nbsp; <span class="badge badge-formula">MULTIPLICACION + SUMA + RESTA</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c1p5">
+          <div class="pregunta-header"><span class="pregunta-num">5</span><span class="pregunta-text">Margen operacional de Enero: Ingresos totales (todos los minerales) menos Costos totales de Enero</span></div>
+          <p class="hint">Ingreso = produccion x precio por cada mineral, sumar todos. Restar costos fila 13. <span class="badge badge-formula">MULT + SUMA + RESTA</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c1p5f" placeholder="=(...) - (...)">
+            <input type="text" class="formula-input" id="c1p5f" data-caso="1" placeholder="=(B2*C7+C2*C8+D2*C9+E2*C10)-SUMA(B13:E13)" onkeydown="if(event.key==='Enter')calcFormula('c1p5f')">
+            <button class="btn-calc" onclick="calcFormula('c1p5f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c1p5r" placeholder="Valor numerico">
+            <div class="result-display" id="c1p5r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">6</span>
-            <span class="pregunta-text">Generar el codigo de reporte concatenando: "RPT-" + Mes + "-" + Mineral principal. Ejemplo resultado: RPT-Enero-Cobre</span>
-          </div>
-          <p class="hint">Para el mes de Enero y mineral Cobre &nbsp; <span class="badge badge-formula">CONCATENAR</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c1p6">
+          <div class="pregunta-header"><span class="pregunta-num">6</span><span class="pregunta-text">Generar codigo de reporte: "RPT-" + Mes de Enero + "-" + Mineral Cobre</span></div>
+          <p class="hint">Usar CONCATENAR o el operador &amp; con las celdas A2 y B7 <span class="badge badge-formula">CONCATENAR</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c1p6f" placeholder='=CONCATENAR(...) o ="RPT-"&...'>
+            <input type="text" class="formula-input" id="c1p6f" data-caso="1" placeholder='=CONCATENAR("RPT-";A2;"-";B7)' onkeydown="if(event.key==='Enter')calcFormula('c1p6f')">
+            <button class="btn-calc" onclick="calcFormula('c1p6f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="text" class="answer-input" id="c1p6r" placeholder="Texto resultante">
+            <div class="result-display" id="c1p6r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">7</span>
-            <span class="pregunta-text">Costo promedio mensual de Energia en el trimestre (USD)</span>
-          </div>
-          <p class="hint">Suma de energia / 3 meses &nbsp; <span class="badge badge-formula">SUMA + DIVISION</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c1p7">
+          <div class="pregunta-header"><span class="pregunta-num">7</span><span class="pregunta-text">Costo promedio mensual de Energia en el trimestre (USD)</span></div>
+          <p class="hint">Suma de energia (B13:B15) dividido por 3 meses <span class="badge badge-formula">SUMA + DIVISION</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c1p7f" placeholder="=SUMA(...)/3">
+            <input type="text" class="formula-input" id="c1p7f" data-caso="1" placeholder="=SUMA(B13:B15)/3" onkeydown="if(event.key==='Enter')calcFormula('c1p7f')">
+            <button class="btn-calc" onclick="calcFormula('c1p7f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c1p7r" placeholder="Valor numerico">
+            <div class="result-display" id="c1p7r">Esperando formula...</div>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -477,45 +340,54 @@
       <div class="caso-card">
         <h3>Caso 2: Analista de Costos &mdash; Transportes del Norte SpA</h3>
         <div class="context-box">
-          <strong>Contexto:</strong> Trabajas como analista de costos en <em>Transportes del Norte SpA</em>, empresa de logistica
-          que opera rutas entre La Serena, Santiago, Antofagasta y Copiapo.
-          La Gerenta de Finanzas necesita un analisis de rentabilidad por ruta y tipo de carga del Q1 2026.
+          <strong>Contexto:</strong> Eres analista de costos en <em>Transportes del Norte SpA</em>, empresa de logistica en la Region de Coquimbo.
+          La Gerenta de Finanzas necesita un analisis de rentabilidad Q1 2026.
+          <strong>Escribe las formulas usando las referencias de celda que ves.</strong>
         </div>
 
-        <h4 class="section-title">Tabla 1: Registro de viajes Q1 2026</h4>
+        <!-- TABLA 1: Viajes (filas 1-11) -->
+        <p class="table-label">Registro de Viajes Q1 2026</p>
+        <p class="table-note">Filas 1-11 de tu hoja Excel</p>
         <div class="table-scroll">
-        <table class="data-table">
-          <tr><th>ID Viaje</th><th>Ruta</th><th>Tipo Carga</th><th>Mes</th><th>Ingreso (CLP)</th><th>Km</th></tr>
-          <tr><td>V001</td><td>LS-SCL</td><td>Refrigerada</td><td>Enero</td><td>2,800,000</td><td>470</td></tr>
-          <tr><td>V002</td><td>LS-SCL</td><td>General</td><td>Enero</td><td>1,500,000</td><td>470</td></tr>
-          <tr><td>V003</td><td>LS-ANT</td><td>Minera</td><td>Enero</td><td>3,200,000</td><td>850</td></tr>
-          <tr><td>V004</td><td>LS-COP</td><td>General</td><td>Febrero</td><td>1,100,000</td><td>330</td></tr>
-          <tr><td>V005</td><td>LS-SCL</td><td>Refrigerada</td><td>Febrero</td><td>2,900,000</td><td>470</td></tr>
-          <tr><td>V006</td><td>LS-ANT</td><td>Minera</td><td>Febrero</td><td>3,500,000</td><td>850</td></tr>
-          <tr><td>V007</td><td>LS-COP</td><td>Refrigerada</td><td>Marzo</td><td>1,800,000</td><td>330</td></tr>
-          <tr><td>V008</td><td>LS-SCL</td><td>General</td><td>Marzo</td><td>1,600,000</td><td>470</td></tr>
-          <tr><td>V009</td><td>LS-ANT</td><td>General</td><td>Marzo</td><td>2,100,000</td><td>850</td></tr>
-          <tr><td>V010</td><td>LS-SCL</td><td>Minera</td><td>Marzo</td><td>2,400,000</td><td>470</td></tr>
+        <table class="excel-table">
+          <tr><th class="row-header"></th><th class="col-header">A</th><th class="col-header">B</th><th class="col-header">C</th><th class="col-header">D</th><th class="col-header">E</th><th class="col-header">F</th></tr>
+          <tr><td class="row-header">1</td><td class="cell-text"><strong>ID Viaje</strong></td><td class="cell-text"><strong>Ruta</strong></td><td class="cell-text"><strong>Tipo Carga</strong></td><td class="cell-text"><strong>Mes</strong></td><td class="cell-text"><strong>Ingreso (CLP)</strong></td><td class="cell-text"><strong>Km</strong></td></tr>
+          <tr><td class="row-header">2</td><td class="cell-text">V001</td><td class="cell-text">LS-SCL</td><td class="cell-text">Refrigerada</td><td class="cell-text">Enero</td><td class="cell">2800000</td><td class="cell">470</td></tr>
+          <tr><td class="row-header">3</td><td class="cell-text">V002</td><td class="cell-text">LS-SCL</td><td class="cell-text">General</td><td class="cell-text">Enero</td><td class="cell">1500000</td><td class="cell">470</td></tr>
+          <tr><td class="row-header">4</td><td class="cell-text">V003</td><td class="cell-text">LS-ANT</td><td class="cell-text">Minera</td><td class="cell-text">Enero</td><td class="cell">3200000</td><td class="cell">850</td></tr>
+          <tr><td class="row-header">5</td><td class="cell-text">V004</td><td class="cell-text">LS-COP</td><td class="cell-text">General</td><td class="cell-text">Febrero</td><td class="cell">1100000</td><td class="cell">330</td></tr>
+          <tr><td class="row-header">6</td><td class="cell-text">V005</td><td class="cell-text">LS-SCL</td><td class="cell-text">Refrigerada</td><td class="cell-text">Febrero</td><td class="cell">2900000</td><td class="cell">470</td></tr>
+          <tr><td class="row-header">7</td><td class="cell-text">V006</td><td class="cell-text">LS-ANT</td><td class="cell-text">Minera</td><td class="cell-text">Febrero</td><td class="cell">3500000</td><td class="cell">850</td></tr>
+          <tr><td class="row-header">8</td><td class="cell-text">V007</td><td class="cell-text">LS-COP</td><td class="cell-text">Refrigerada</td><td class="cell-text">Marzo</td><td class="cell">1800000</td><td class="cell">330</td></tr>
+          <tr><td class="row-header">9</td><td class="cell-text">V008</td><td class="cell-text">LS-SCL</td><td class="cell-text">General</td><td class="cell-text">Marzo</td><td class="cell">1600000</td><td class="cell">470</td></tr>
+          <tr><td class="row-header">10</td><td class="cell-text">V009</td><td class="cell-text">LS-ANT</td><td class="cell-text">General</td><td class="cell-text">Marzo</td><td class="cell">2100000</td><td class="cell">850</td></tr>
+          <tr><td class="row-header">11</td><td class="cell-text">V010</td><td class="cell-text">LS-SCL</td><td class="cell-text">Minera</td><td class="cell-text">Marzo</td><td class="cell">2400000</td><td class="cell">470</td></tr>
         </table>
         </div>
 
-        <h4 class="section-title">Tabla 2: Costos por kilometro segun tipo de carga (CLP/km)</h4>
+        <!-- TABLA 2: Costos/km (filas 13-16) -->
+        <p class="table-label">Costos por Kilometro segun Tipo de Carga (CLP/km)</p>
+        <p class="table-note">Filas 13-16 de tu hoja Excel</p>
         <div class="table-scroll">
-        <table class="data-table">
-          <tr><th>Codigo Carga</th><th>Tipo Carga</th><th>Costo CLP/km</th><th>Requiere Seguro</th></tr>
-          <tr><td>TC-REF</td><td>Refrigerada</td><td>1,800</td><td>Si</td></tr>
-          <tr><td>TC-GEN</td><td>General</td><td>1,200</td><td>No</td></tr>
-          <tr><td>TC-MIN</td><td>Minera</td><td>2,500</td><td>Si</td></tr>
+        <table class="excel-table">
+          <tr><th class="row-header"></th><th class="col-header">A</th><th class="col-header">B</th><th class="col-header">C</th><th class="col-header">D</th></tr>
+          <tr><td class="row-header">13</td><td class="cell-text"><strong>Codigo</strong></td><td class="cell-text"><strong>Tipo Carga</strong></td><td class="cell-text"><strong>Costo CLP/km</strong></td><td class="cell-text"><strong>Requiere Seguro</strong></td></tr>
+          <tr><td class="row-header">14</td><td class="cell-text">TC-REF</td><td class="cell-text">Refrigerada</td><td class="cell">1800</td><td class="cell-text">Si</td></tr>
+          <tr><td class="row-header">15</td><td class="cell-text">TC-GEN</td><td class="cell-text">General</td><td class="cell">1200</td><td class="cell-text">No</td></tr>
+          <tr><td class="row-header">16</td><td class="cell-text">TC-MIN</td><td class="cell-text">Minera</td><td class="cell">2500</td><td class="cell-text">Si</td></tr>
         </table>
         </div>
 
-        <h4 class="section-title">Tabla 3: Seguros por ruta (CLP por viaje)</h4>
+        <!-- TABLA 3: Seguros (filas 18-21) -->
+        <p class="table-label">Seguros por Ruta (CLP por viaje)</p>
+        <p class="table-note">Filas 18-21 de tu hoja Excel</p>
         <div class="table-scroll">
-        <table class="data-table">
-          <tr><th>Ruta</th><th>Seguro por viaje</th></tr>
-          <tr><td>LS-SCL</td><td>180,000</td></tr>
-          <tr><td>LS-ANT</td><td>320,000</td></tr>
-          <tr><td>LS-COP</td><td>120,000</td></tr>
+        <table class="excel-table">
+          <tr><th class="row-header"></th><th class="col-header">A</th><th class="col-header">B</th></tr>
+          <tr><td class="row-header">18</td><td class="cell-text"><strong>Ruta</strong></td><td class="cell-text"><strong>Seguro por viaje</strong></td></tr>
+          <tr><td class="row-header">19</td><td class="cell-text">LS-SCL</td><td class="cell">180000</td></tr>
+          <tr><td class="row-header">20</td><td class="cell-text">LS-ANT</td><td class="cell">320000</td></tr>
+          <tr><td class="row-header">21</td><td class="cell-text">LS-COP</td><td class="cell">120000</td></tr>
         </table>
         </div>
       </div>
@@ -524,131 +396,109 @@
       <div class="caso-card">
         <h3>Preguntas &mdash; Caso 2</h3>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">1</span>
-            <span class="pregunta-text">Ingreso total de todos los viajes con ruta "LS-SCL" Y tipo de carga "Refrigerada"</span>
-          </div>
-          <p class="hint">Dos criterios simultaneos &nbsp; <span class="badge badge-formula">SUMAR.SI.CONJUNTO</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c2p1">
+          <div class="pregunta-header"><span class="pregunta-num">1</span><span class="pregunta-text">Ingreso total de viajes con ruta "LS-SCL" Y tipo de carga "Refrigerada"</span></div>
+          <p class="hint">Sumar ingresos (col E) donde Ruta (col B) = "LS-SCL" Y Tipo (col C) = "Refrigerada" <span class="badge badge-formula">SUMAR.SI.CONJUNTO</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c2p1f" placeholder="=SUMAR.SI.CONJUNTO(...)">
+            <input type="text" class="formula-input" id="c2p1f" data-caso="2" placeholder='=SUMAR.SI.CONJUNTO(E2:E11;B2:B11;"LS-SCL";C2:C11;"Refrigerada")' onkeydown="if(event.key==='Enter')calcFormula('c2p1f')">
+            <button class="btn-calc" onclick="calcFormula('c2p1f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c2p1r" placeholder="Valor numerico">
+            <div class="result-display" id="c2p1r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">2</span>
-            <span class="pregunta-text">Usando BUSCARV con codigo "TC-MIN", obtener el costo por km de carga Minera</span>
-          </div>
-          <p class="hint">Buscar en Tabla 2 &nbsp; <span class="badge badge-formula">BUSCARV</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c2p2">
+          <div class="pregunta-header"><span class="pregunta-num">2</span><span class="pregunta-text">Usando BUSCARV con codigo "TC-MIN", obtener el costo por km de carga Minera</span></div>
+          <p class="hint">Buscar "TC-MIN" en tabla de costos (A14:C16), devolver columna 3 <span class="badge badge-formula">BUSCARV</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c2p2f" placeholder="=BUSCARV(...)">
+            <input type="text" class="formula-input" id="c2p2f" data-caso="2" placeholder='=BUSCARV("TC-MIN";A14:C16;3;0)' onkeydown="if(event.key==='Enter')calcFormula('c2p2f')">
+            <button class="btn-calc" onclick="calcFormula('c2p2f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c2p2r" placeholder="Valor numerico">
+            <div class="result-display" id="c2p2r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">3</span>
-            <span class="pregunta-text">Costo total del viaje V003 (costo por km * km recorridos + seguro si aplica)</span>
-          </div>
-          <p class="hint">V003: Minera, 850 km, ruta LS-ANT. Minera requiere seguro. &nbsp; <span class="badge badge-formula">MULTIPLICACION + SUMA + BUSCARV</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c2p3">
+          <div class="pregunta-header"><span class="pregunta-num">3</span><span class="pregunta-text">Costo total del viaje V003 (costo/km * km + seguro si aplica)</span></div>
+          <p class="hint">V003: Minera, 850 km, ruta LS-ANT. Minera requiere seguro. Usa C16*F4+B20 <span class="badge badge-formula">MULT + SUMA</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c2p3f" placeholder="=costo_km * km + seguro">
+            <input type="text" class="formula-input" id="c2p3f" data-caso="2" placeholder="=C16*F4+B20" onkeydown="if(event.key==='Enter')calcFormula('c2p3f')">
+            <button class="btn-calc" onclick="calcFormula('c2p3f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c2p3r" placeholder="Valor numerico">
+            <div class="result-display" id="c2p3r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">4</span>
-            <span class="pregunta-text">Utilidad del viaje V003 (Ingreso - Costo total)</span>
-          </div>
-          <p class="hint">Ingreso V003 menos el costo calculado en pregunta anterior &nbsp; <span class="badge badge-formula">RESTA</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c2p4">
+          <div class="pregunta-header"><span class="pregunta-num">4</span><span class="pregunta-text">Utilidad del viaje V003 (Ingreso - Costo total)</span></div>
+          <p class="hint">Ingreso V003 (E4) menos el costo calculado en pregunta anterior <span class="badge badge-formula">RESTA</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c2p4f" placeholder="=ingreso - costo">
+            <input type="text" class="formula-input" id="c2p4f" data-caso="2" placeholder="=E4-(C16*F4+B20)" onkeydown="if(event.key==='Enter')calcFormula('c2p4f')">
+            <button class="btn-calc" onclick="calcFormula('c2p4f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c2p4r" placeholder="Valor numerico">
+            <div class="result-display" id="c2p4r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">5</span>
-            <span class="pregunta-text">Ingreso promedio por km de la ruta LS-SCL (suma ingresos LS-SCL / total km LS-SCL)</span>
-          </div>
-          <p class="hint">Hay 5 viajes LS-SCL, todos de 470 km &nbsp; <span class="badge badge-formula">SUMAR.SI.CONJUNTO + DIVISION</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c2p5">
+          <div class="pregunta-header"><span class="pregunta-num">5</span><span class="pregunta-text">Ingreso promedio por km en ruta LS-SCL</span></div>
+          <p class="hint">Sumar ingresos LS-SCL / (cantidad de viajes LS-SCL * 470 km). Hay 5 viajes LS-SCL. <span class="badge badge-formula">SUMAR.SI.CONJUNTO + DIVISION</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c2p5f" placeholder="=SUMAR.SI.CONJUNTO(...) / (5*470)">
+            <input type="text" class="formula-input" id="c2p5f" data-caso="2" placeholder='=SUMAR.SI.CONJUNTO(E2:E11;B2:B11;"LS-SCL")/(5*470)' onkeydown="if(event.key==='Enter')calcFormula('c2p5f')">
+            <button class="btn-calc" onclick="calcFormula('c2p5f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c2p5r" placeholder="Valor numerico (puede tener decimales)">
+            <div class="result-display" id="c2p5r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">6</span>
-            <span class="pregunta-text">Generar el codigo de factura: "FAC-2026-" + ID del viaje + "-" + Tipo de carga. Para V001.</span>
-          </div>
-          <p class="hint">Resultado esperado: FAC-2026-V001-Refrigerada &nbsp; <span class="badge badge-formula">CONCATENAR</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c2p6">
+          <div class="pregunta-header"><span class="pregunta-num">6</span><span class="pregunta-text">Codigo de factura para V001: "FAC-2026-" + ID viaje + "-" + Tipo carga</span></div>
+          <p class="hint">Resultado: FAC-2026-V001-Refrigerada. Usar celdas A2 y C2 <span class="badge badge-formula">CONCATENAR</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c2p6f" placeholder='=CONCATENAR(...) o ="FAC-2026-"&...'>
+            <input type="text" class="formula-input" id="c2p6f" data-caso="2" placeholder='=CONCATENAR("FAC-2026-";A2;"-";C2)' onkeydown="if(event.key==='Enter')calcFormula('c2p6f')">
+            <button class="btn-calc" onclick="calcFormula('c2p6f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="text" class="answer-input" id="c2p6r" placeholder="Texto resultante">
+            <div class="result-display" id="c2p6r">Esperando formula...</div>
           </div>
         </div>
 
-        <div class="pregunta">
-          <div class="pregunta-header">
-            <span class="pregunta-num">7</span>
-            <span class="pregunta-text">Total de ingresos de carga "General" en el mes de "Marzo"</span>
-          </div>
-          <p class="hint">Dos criterios: tipo + mes &nbsp; <span class="badge badge-formula">SUMAR.SI.CONJUNTO</span></p>
-          <div class="answer-group">
+        <div class="pregunta" id="q_c2p7">
+          <div class="pregunta-header"><span class="pregunta-num">7</span><span class="pregunta-text">Total de ingresos de carga "General" en el mes de "Marzo"</span></div>
+          <p class="hint">Dos criterios: Tipo Carga (col C) = "General" Y Mes (col D) = "Marzo" <span class="badge badge-formula">SUMAR.SI.CONJUNTO</span></p>
+          <div class="formula-row">
             <label>Formula:</label>
-            <input type="text" class="answer-input" id="c2p7f" placeholder="=SUMAR.SI.CONJUNTO(...)">
+            <input type="text" class="formula-input" id="c2p7f" data-caso="2" placeholder='=SUMAR.SI.CONJUNTO(E2:E11;C2:C11;"General";D2:D11;"Marzo")' onkeydown="if(event.key==='Enter')calcFormula('c2p7f')">
+            <button class="btn-calc" onclick="calcFormula('c2p7f')">Calcular</button>
           </div>
-          <br>
-          <div class="answer-group">
+          <div class="formula-row">
             <label>Resultado:</label>
-            <input type="number" class="answer-input" id="c2p7r" placeholder="Valor numerico">
+            <div class="result-display" id="c2p7r">Esperando formula...</div>
           </div>
         </div>
-
       </div>
     </div>
 
     <!-- BOTON ENVIAR -->
-    <button class="btn btn-success btn-block" onclick="submitAnswers()" style="margin-top:10px;">
-      Enviar Respuestas y Generar Codigo
+    <button class="btn btn-block" id="btnSubmit" onclick="submitAnswers()" style="margin-top:10px;" disabled>
+      Completar ambos casos para enviar
     </button>
 
     <!-- RESULTADO -->
@@ -656,22 +506,20 @@
       <h2>Resultado del Grupo <span id="resultGrupo"></span></h2>
       <div class="result-score" id="resultScore"></div>
       <div class="result-code" id="resultCode"></div>
-      <div class="result-detail" id="resultDetail"></div>
-      <br>
-      <div style="display:flex; flex-direction:column; gap:10px; align-items:center; margin-top:10px;">
-        <button class="btn btn-whatsapp btn-block" onclick="sendEmail()" style="background:#EA4335; max-width:400px;">
-          <span style="font-size:1.3rem;">&#9993;</span> Enviar Resultado por Correo
+      <div id="resultDetail" style="font-size:0.9rem; opacity:0.8; margin:8px 0;"></div>
+      <div style="display:flex; flex-direction:column; gap:10px; align-items:center; margin-top:15px;">
+        <button class="btn-whatsapp btn-block" onclick="sendEmail()" style="background:#EA4335; max-width:400px;">
+          &#9993; Enviar Resultado por Correo
         </button>
-        <button class="btn btn-whatsapp btn-block" onclick="sendWhatsApp()" style="max-width:400px;">
-          <span style="font-size:1.3rem;">&#128172;</span> Enviar por WhatsApp
+        <button class="btn-whatsapp btn-block" onclick="sendWhatsApp()" style="max-width:400px;">
+          &#128172; Enviar por WhatsApp
         </button>
-        <button class="btn btn-whatsapp btn-block" onclick="copyResult()" style="background:#3b82f6; max-width:400px;">
-          <span style="font-size:1.3rem;">&#128203;</span> Copiar al Portapapeles
+        <button class="btn-whatsapp btn-block" onclick="copyResult()" style="background:#3b82f6; max-width:400px;">
+          &#128203; Copiar al Portapapeles
         </button>
       </div>
-      <p style="opacity:0.6; font-size:0.8rem; margin-top:10px;">Se abre su correo o WhatsApp con el mensaje listo. Solo presionen Enviar.</p>
+      <p style="opacity:0.5; font-size:0.75rem; margin-top:10px;">Se abre su correo o WhatsApp con el mensaje listo.</p>
     </div>
-
   </div>
 </div>
 
@@ -692,58 +540,443 @@
       <button class="btn btn-primary" onclick="verifyCode()">Verificar</button>
     </div>
     <div id="profResult"></div>
-
-    <hr style="margin: 20px 0;">
+    <hr style="margin:20px 0;">
     <h3>Respuestas Correctas</h3>
-    <div style="background:#f8f9fa; padding:15px; border-radius:8px; font-size:0.9rem;">
+    <div style="background:#f8f9fa; padding:15px; border-radius:8px; font-size:0.85rem;">
       <h4>Caso 1 - Minera Cerro Brillante</h4>
       <ol>
-        <li><strong>Produccion Cobre trimestre:</strong> 37,500 ton (12500+11800+13200)</li>
-        <li><strong>Ingreso Cobre Enero:</strong> 106,250,000 USD (12500 * 8500)</li>
-        <li><strong>Costo total Febrero:</strong> 9,520,000 USD (2650000+4500000+1350000+1020000)</li>
-        <li><strong>Precio Molibdeno (BUSCARV):</strong> 45,000 USD</li>
-        <li><strong>Margen Enero:</strong> Ingresos: 12500*8500 + 85*62000 + 340*45000 + 1200*780 = 106,250,000 + 5,270,000 + 15,300,000 + 936,000 = 127,756,000. Costos: 2800000+4500000+1200000+980000 = 9,480,000. <strong>Margen = 118,276,000</strong></li>
-        <li><strong>Codigo reporte:</strong> RPT-Enero-Cobre</li>
-        <li><strong>Promedio energia:</strong> 2,783,333.33 ((2800000+2650000+2900000)/3)</li>
+        <li><strong>37,500</strong> = SUMA(B2:B4) = 12500+11800+13200</li>
+        <li><strong>106,250,000</strong> = B2*C7 = 12500*8500</li>
+        <li><strong>9,520,000</strong> = SUMA(B14:E14) = 2650000+4500000+1350000+1020000</li>
+        <li><strong>45,000</strong> = BUSCARV("MO-01";A7:C10;3;0)</li>
+        <li><strong>118,276,000</strong> = (12500*8500 + 85*62000 + 340*45000 + 1200*780) - (2800000+4500000+1200000+980000) = 127,756,000 - 9,480,000</li>
+        <li><strong>RPT-Enero-Cobre</strong> = CONCATENAR("RPT-";A2;"-";B7)</li>
+        <li><strong>2,783,333.33</strong> = SUMA(B13:B15)/3 = 8350000/3</li>
       </ol>
       <br>
       <h4>Caso 2 - Transportes del Norte</h4>
       <ol>
-        <li><strong>Ingresos LS-SCL + Refrigerada:</strong> 5,700,000 CLP (2800000+2900000)</li>
-        <li><strong>Costo/km Minera (BUSCARV):</strong> 2,500 CLP</li>
-        <li><strong>Costo V003:</strong> 2500*850 + 320000 = 2,125,000 + 320,000 = <strong>2,445,000</strong></li>
-        <li><strong>Utilidad V003:</strong> 3,200,000 - 2,445,000 = <strong>755,000</strong></li>
-        <li><strong>Ingreso promedio/km LS-SCL:</strong> (2,800,000+1,500,000+2,900,000+1,600,000+2,400,000) / (5 x 470) = 11,200,000 / 2,350 = <strong>4,765.96</strong></li>
-        <li><strong>Codigo factura:</strong> FAC-2026-V001-Refrigerada</li>
-        <li><strong>General + Marzo:</strong> 1,600,000 + 2,100,000 = <strong>3,700,000</strong></li>
+        <li><strong>5,700,000</strong> = SUMAR.SI.CONJUNTO(E2:E11;B2:B11;"LS-SCL";C2:C11;"Refrigerada") = 2800000+2900000</li>
+        <li><strong>2,500</strong> = BUSCARV("TC-MIN";A14:C16;3;0)</li>
+        <li><strong>2,445,000</strong> = C16*F4+B20 = 2500*850+320000</li>
+        <li><strong>755,000</strong> = E4-(C16*F4+B20) = 3200000-2445000</li>
+        <li><strong>4,765.96</strong> = SUMAR.SI.CONJUNTO(E2:E11;B2:B11;"LS-SCL")/(5*470) = 11200000/2350</li>
+        <li><strong>FAC-2026-V001-Refrigerada</strong> = CONCATENAR("FAC-2026-";A2;"-";C2)</li>
+        <li><strong>3,700,000</strong> = SUMAR.SI.CONJUNTO(E2:E11;C2:C11;"General";D2:D11;"Marzo") = 1600000+2100000</li>
       </ol>
     </div>
   </div>
 </div>
 
 <script>
-// ===== RESPUESTAS CORRECTAS =====
-const ANSWERS = {
-  // Caso 1
-  c1p1r: { value: 37500, type: 'number', tolerance: 0 },
-  c1p2r: { value: 106250000, type: 'number', tolerance: 0 },
-  c1p3r: { value: 9520000, type: 'number', tolerance: 0 },
-  c1p4r: { value: 45000, type: 'number', tolerance: 0 },
-  c1p5r: { value: 118276000, type: 'number', tolerance: 0 },
-  c1p6r: { value: 'RPT-Enero-Cobre', type: 'text' },
-  c1p7r: { value: 2783333.33, type: 'number', tolerance: 1 },
-  // Caso 2
-  c2p1r: { value: 5700000, type: 'number', tolerance: 0 },
-  c2p2r: { value: 2500, type: 'number', tolerance: 0 },
-  c2p3r: { value: 2445000, type: 'number', tolerance: 0 },
-  c2p4r: { value: 755000, type: 'number', tolerance: 0 },
-  c2p5r: { value: 4765.96, type: 'number', tolerance: 1 },
-  c2p6r: { value: 'FAC-2026-V001-Refrigerada', type: 'text' },
-  c2p7r: { value: 3700000, type: 'number', tolerance: 0 },
+// =====================================================
+// DATOS DE LAS HOJAS EXCEL (como celdas reales)
+// =====================================================
+
+const CASO1 = {
+  // Tabla 1: Produccion (filas 1-4)
+  A1:'Mes',B1:'Cobre',C1:'Oro (kg)',D1:'Molibdeno',E1:'Plata (kg)',
+  A2:'Enero',B2:12500,C2:85,D2:340,E2:1200,
+  A3:'Febrero',B3:11800,C3:92,D3:310,E3:1350,
+  A4:'Marzo',B4:13200,C4:78,D4:365,E4:1100,
+  // Tabla 2: Precios (filas 6-10)
+  A6:'Codigo',B6:'Mineral',C6:'Precio USD/ton',D6:'Categoria',
+  A7:'CU-01',B7:'Cobre',C7:8500,D7:'Base',
+  A8:'AU-01',B8:'Oro',C8:62000,D8:'Precioso',
+  A9:'MO-01',B9:'Molibdeno',C9:45000,D9:'Especial',
+  A10:'AG-01',B10:'Plata',C10:780,D10:'Precioso',
+  // Tabla 3: Costos (filas 12-15)
+  A12:'Mes',B12:'Energia',C12:'Mano Obra',D12:'Mantencion',E12:'Insumos',
+  A13:'Enero',B13:2800000,C13:4500000,D13:1200000,E13:980000,
+  A14:'Febrero',B14:2650000,C14:4500000,D14:1350000,E14:1020000,
+  A15:'Marzo',B15:2900000,C15:4500000,D15:1100000,E15:1050000,
 };
 
-// Caso 2 P5: hay 5 viajes LS-SCL (V001,V002,V005,V008,V010)
-// Recalcular: (2800000+1500000+2900000+1600000+2400000)/(5*470) = 11200000/2350 = 4765.957...
+const CASO2 = {
+  // Tabla 1: Viajes (filas 1-11)
+  A1:'ID Viaje',B1:'Ruta',C1:'Tipo Carga',D1:'Mes',E1:'Ingreso (CLP)',F1:'Km',
+  A2:'V001',B2:'LS-SCL',C2:'Refrigerada',D2:'Enero',E2:2800000,F2:470,
+  A3:'V002',B3:'LS-SCL',C3:'General',D3:'Enero',E3:1500000,F3:470,
+  A4:'V003',B4:'LS-ANT',C4:'Minera',D4:'Enero',E4:3200000,F4:850,
+  A5:'V004',B5:'LS-COP',C5:'General',D5:'Febrero',E5:1100000,F5:330,
+  A6:'V005',B6:'LS-SCL',C6:'Refrigerada',D6:'Febrero',E6:2900000,F6:470,
+  A7:'V006',B7:'LS-ANT',C7:'Minera',D7:'Febrero',E7:3500000,F7:850,
+  A8:'V007',B8:'LS-COP',C8:'Refrigerada',D8:'Marzo',E8:1800000,F8:330,
+  A9:'V008',B9:'LS-SCL',C9:'General',D9:'Marzo',E9:1600000,F9:470,
+  A10:'V009',B10:'LS-ANT',C10:'General',D10:'Marzo',E10:2100000,F10:850,
+  A11:'V010',B11:'LS-SCL',C11:'Minera',D11:'Marzo',E11:2400000,F11:470,
+  // Tabla 2: Costos/km (filas 13-16)
+  A13:'Codigo',B13:'Tipo Carga',C13:'Costo CLP/km',D13:'Requiere Seguro',
+  A14:'TC-REF',B14:'Refrigerada',C14:1800,D14:'Si',
+  A15:'TC-GEN',B15:'General',C15:1200,D15:'No',
+  A16:'TC-MIN',B16:'Minera',C16:2500,D16:'Si',
+  // Tabla 3: Seguros (filas 18-21)
+  A18:'Ruta',B18:'Seguro por viaje',
+  A19:'LS-SCL',B19:180000,
+  A20:'LS-ANT',B20:320000,
+  A21:'LS-COP',B21:120000,
+};
+
+// =====================================================
+// MOTOR DE FORMULAS EXCEL
+// =====================================================
+
+function getCells(caso) {
+  return caso === '1' || caso === 1 ? CASO1 : CASO2;
+}
+
+function cellVal(cells, ref) {
+  const val = cells[ref.toUpperCase()];
+  return val !== undefined ? val : undefined;
+}
+
+function colNum(letter) {
+  return letter.toUpperCase().charCodeAt(0) - 64; // A=1, B=2, etc
+}
+
+function numToCol(n) {
+  return String.fromCharCode(64 + n);
+}
+
+function expandRange(cells, rangeStr) {
+  // "B2:B4" → array of values, "B2:E2" → array, "A7:C10" → 2D array
+  const parts = rangeStr.toUpperCase().split(':');
+  const m1 = parts[0].match(/^([A-Z]+)(\d+)$/);
+  const m2 = parts[1].match(/^([A-Z]+)(\d+)$/);
+  if (!m1 || !m2) return [];
+
+  const c1 = colNum(m1[1]), r1 = parseInt(m1[2]);
+  const c2 = colNum(m2[1]), r2 = parseInt(m2[2]);
+
+  if (c1 === c2) {
+    // Vertical range: single column
+    const arr = [];
+    for (let r = r1; r <= r2; r++) {
+      const v = cellVal(cells, m1[1] + r);
+      arr.push(v !== undefined ? v : 0);
+    }
+    return arr;
+  } else if (r1 === r2) {
+    // Horizontal range: single row
+    const arr = [];
+    for (let c = c1; c <= c2; c++) {
+      const v = cellVal(cells, numToCol(c) + r1);
+      arr.push(v !== undefined ? v : 0);
+    }
+    return arr;
+  } else {
+    // 2D range (for BUSCARV)
+    const arr = [];
+    for (let r = r1; r <= r2; r++) {
+      const row = [];
+      for (let c = c1; c <= c2; c++) {
+        const v = cellVal(cells, numToCol(c) + r);
+        row.push(v !== undefined ? v : '');
+      }
+      arr.push(row);
+    }
+    return arr;
+  }
+}
+
+function expandRangeColumn(cells, rangeStr) {
+  // Returns flat array of values for a column range (used in SUMAR.SI.CONJUNTO)
+  const parts = rangeStr.toUpperCase().split(':');
+  const m1 = parts[0].match(/^([A-Z]+)(\d+)$/);
+  const m2 = parts[1].match(/^([A-Z]+)(\d+)$/);
+  if (!m1 || !m2) return [];
+  const col = m1[1];
+  const r1 = parseInt(m1[2]), r2 = parseInt(m2[2]);
+  const arr = [];
+  for (let r = r1; r <= r2; r++) {
+    const v = cellVal(cells, col + r);
+    arr.push(v !== undefined ? v : '');
+  }
+  return arr;
+}
+
+// Tokenize formula arguments respecting nested parentheses
+function splitArgs(str) {
+  const args = [];
+  let depth = 0, current = '';
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+    if (ch === '(' ) { depth++; current += ch; }
+    else if (ch === ')') { depth--; current += ch; }
+    else if ((ch === ';' || ch === ',') && depth === 0) { args.push(current.trim()); current = ''; }
+    else { current += ch; }
+  }
+  if (current.trim()) args.push(current.trim());
+  return args;
+}
+
+function evaluateFormula(formula, casoNum) {
+  const cells = getCells(casoNum);
+  let expr = formula.trim();
+  if (!expr.startsWith('=')) return { error: 'La formula debe comenzar con =' };
+  expr = expr.substring(1).trim();
+  if (!expr) return { error: 'Formula vacia' };
+
+  try {
+    const result = evalExpr(expr, cells);
+    return { value: result };
+  } catch (e) {
+    return { error: e.message || 'Error en la formula' };
+  }
+}
+
+function evalExpr(expr, cells) {
+  expr = expr.trim();
+
+  // Process CONCATENAR / CONCAT
+  const concatMatch = expr.match(/^CONCATENAR?\s*\((.+)\)$/i);
+  if (concatMatch) {
+    const args = splitArgs(concatMatch[1]);
+    return args.map(a => String(resolveValue(a, cells))).join('');
+  }
+
+  // Process & operator for concatenation (handle at top level)
+  if (expr.includes('&') && !expr.match(/^(SUMA|BUSCARV|SUMAR)/i)) {
+    const parts = expr.split('&');
+    return parts.map(p => String(resolveValue(p.trim(), cells))).join('');
+  }
+
+  // Process SUMAR.SI.CONJUNTO / SUMIFS
+  const sumifsMatch = expr.match(/^SUMAR\.SI\.CONJUNTO\s*\((.+)\)$/i);
+  if (sumifsMatch) {
+    return evalSumarSiConjunto(sumifsMatch[1], cells);
+  }
+
+  // Check if expression contains SUMAR.SI.CONJUNTO as part of larger expression
+  // e.g., SUMAR.SI.CONJUNTO(...)/(...)
+  const sumifsPartial = expr.match(/SUMAR\.SI\.CONJUNTO\s*\(([^)]*(?:\([^)]*\))*[^)]*)\)/i);
+  if (sumifsPartial) {
+    const fullMatch = findMatchingParen(expr, expr.indexOf('(', expr.search(/SUMAR\.SI\.CONJUNTO/i)));
+    if (fullMatch) {
+      const innerArgs = expr.substring(fullMatch.start + 1, fullMatch.end);
+      const sumifsResult = evalSumarSiConjunto(innerArgs, cells);
+      const before = expr.substring(0, expr.search(/SUMAR\.SI\.CONJUNTO/i));
+      const after = expr.substring(fullMatch.end + 1);
+      const newExpr = before + sumifsResult + after;
+      return evalArithmetic(newExpr, cells);
+    }
+  }
+
+  // Process BUSCARV / VLOOKUP
+  const buscarMatch = expr.match(/^BUSCARV\s*\((.+)\)$/i);
+  if (buscarMatch) {
+    return evalBuscarV(buscarMatch[1], cells);
+  }
+
+  // Process SUMA as part of arithmetic (can appear multiple times)
+  // Replace all SUMA(...) calls with their values
+  let processed = expr;
+  let safety = 0;
+  while (processed.match(/SUMA\s*\(/i) && safety < 10) {
+    const idx = processed.search(/SUMA\s*\(/i);
+    const parenStart = processed.indexOf('(', idx);
+    const paren = findMatchingParen(processed, parenStart);
+    if (!paren) break;
+    const inner = processed.substring(paren.start + 1, paren.end);
+    const sumaResult = evalSuma(inner, cells);
+    processed = processed.substring(0, idx) + sumaResult + processed.substring(paren.end + 1);
+    safety++;
+  }
+
+  // Replace BUSCARV calls within arithmetic
+  safety = 0;
+  while (processed.match(/BUSCARV\s*\(/i) && safety < 10) {
+    const idx = processed.search(/BUSCARV\s*\(/i);
+    const parenStart = processed.indexOf('(', idx);
+    const paren = findMatchingParen(processed, parenStart);
+    if (!paren) break;
+    const inner = processed.substring(paren.start + 1, paren.end);
+    const bvResult = evalBuscarV(inner, cells);
+    processed = processed.substring(0, idx) + bvResult + processed.substring(paren.end + 1);
+    safety++;
+  }
+
+  return evalArithmetic(processed, cells);
+}
+
+function findMatchingParen(str, openIdx) {
+  if (str[openIdx] !== '(') return null;
+  let depth = 0;
+  for (let i = openIdx; i < str.length; i++) {
+    if (str[i] === '(') depth++;
+    else if (str[i] === ')') { depth--; if (depth === 0) return { start: openIdx, end: i }; }
+  }
+  return null;
+}
+
+function evalSuma(argsStr, cells) {
+  const args = splitArgs(argsStr);
+  let total = 0;
+  for (const arg of args) {
+    if (arg.match(/^[A-Z]+\d+:[A-Z]+\d+$/i)) {
+      const vals = expandRange(cells, arg);
+      if (Array.isArray(vals[0])) { vals.forEach(row => row.forEach(v => { if (typeof v === 'number') total += v; })); }
+      else { vals.forEach(v => { if (typeof v === 'number') total += v; }); }
+    } else {
+      total += Number(resolveValue(arg, cells)) || 0;
+    }
+  }
+  return total;
+}
+
+function evalBuscarV(argsStr, cells) {
+  const args = splitArgs(argsStr);
+  if (args.length < 3) throw new Error('BUSCARV necesita al menos 3 argumentos');
+  const lookupVal = resolveValue(args[0], cells);
+  const tableRange = expandRange(cells, args[1].trim());
+  const colIdx = parseInt(resolveValue(args[2], cells));
+  if (!Array.isArray(tableRange[0])) throw new Error('Rango de BUSCARV invalido');
+  for (const row of tableRange) {
+    if (String(row[0]).toLowerCase() === String(lookupVal).toLowerCase()) {
+      return row[colIdx - 1];
+    }
+  }
+  return '#N/A';
+}
+
+function evalSumarSiConjunto(argsStr, cells) {
+  const args = splitArgs(argsStr);
+  if (args.length < 3 || args.length % 2 === 0) throw new Error('SUMAR.SI.CONJUNTO: argumentos invalidos');
+  const sumRange = expandRangeColumn(cells, args[0].trim());
+  let total = 0;
+  for (let i = 0; i < sumRange.length; i++) {
+    let match = true;
+    for (let j = 1; j < args.length; j += 2) {
+      const criteriaRange = expandRangeColumn(cells, args[j].trim());
+      const criteriaVal = resolveValue(args[j + 1], cells);
+      if (String(criteriaRange[i]).toLowerCase() !== String(criteriaVal).toLowerCase()) {
+        match = false;
+        break;
+      }
+    }
+    if (match) total += (typeof sumRange[i] === 'number' ? sumRange[i] : 0);
+  }
+  return total;
+}
+
+function resolveValue(expr, cells) {
+  expr = expr.trim();
+  // String literal
+  if ((expr.startsWith('"') && expr.endsWith('"')) || (expr.startsWith("'") && expr.endsWith("'"))) {
+    return expr.slice(1, -1);
+  }
+  // Number
+  if (!isNaN(expr) && expr !== '') return parseFloat(expr);
+  // Single cell reference
+  if (expr.match(/^[A-Z]+\d+$/i)) {
+    const v = cellVal(cells, expr);
+    if (v === undefined) throw new Error(`Celda ${expr.toUpperCase()} no existe`);
+    return v;
+  }
+  // Try to evaluate as arithmetic
+  return evalArithmetic(expr, cells);
+}
+
+function evalArithmetic(expr, cells) {
+  expr = expr.trim();
+  // Replace cell references with their values
+  let jsExpr = expr.replace(/([A-Z]+)(\d+)/gi, (match, col, row) => {
+    const v = cellVal(cells, match);
+    if (v === undefined) throw new Error(`Celda ${match.toUpperCase()} no existe`);
+    if (typeof v === 'string') return `"${v}"`;
+    return v;
+  });
+
+  // Security: only allow numbers, operators, parens, dots, quotes, spaces
+  if (jsExpr.match(/[^0-9+\-*/().," \t]/)) {
+    throw new Error('Caracteres no permitidos en la formula');
+  }
+
+  try {
+    const result = Function('"use strict"; return (' + jsExpr + ')')();
+    return result;
+  } catch (e) {
+    throw new Error('Error de calculo: revisa la formula');
+  }
+}
+
+// =====================================================
+// UI: Calcular formula y mostrar resultado
+// =====================================================
+
+function calcFormula(inputId) {
+  const input = document.getElementById(inputId);
+  const resultId = inputId.replace('f', 'r');
+  const resultDiv = document.getElementById(resultId);
+  const casoNum = input.dataset.caso;
+  const formula = input.value.trim();
+
+  if (!formula) {
+    resultDiv.textContent = 'Esperando formula...';
+    resultDiv.className = 'result-display';
+    delete resultDiv.dataset.rawValue;
+    checkAllComplete();
+    return;
+  }
+
+  const result = evaluateFormula(formula, casoNum);
+
+  if (result.error) {
+    resultDiv.textContent = result.error;
+    resultDiv.className = 'result-display error';
+    delete resultDiv.dataset.rawValue;
+  } else {
+    const display = typeof result.value === 'number'
+      ? result.value.toLocaleString('es-CL', { maximumFractionDigits: 2 })
+      : String(result.value);
+    resultDiv.textContent = display;
+    resultDiv.className = 'result-display calculated';
+    resultDiv.dataset.rawValue = result.value;
+  }
+  checkAllComplete();
+}
+
+function checkAllComplete() {
+  const btn = document.getElementById('btnSubmit');
+  // Verificar que las 14 preguntas (7 caso1 + 7 caso2) tengan resultado calculado
+  let allDone = true;
+  for (let c = 1; c <= 2; c++) {
+    for (let p = 1; p <= 7; p++) {
+      const rd = document.getElementById(`c${c}p${p}r`);
+      if (!rd || rd.dataset.rawValue === undefined) { allDone = false; break; }
+    }
+    if (!allDone) break;
+  }
+  if (allDone) {
+    btn.disabled = false;
+    btn.className = 'btn btn-success btn-block';
+    btn.textContent = 'Enviar Respuestas y Generar Codigo';
+  } else {
+    btn.disabled = true;
+    btn.className = 'btn btn-block';
+    btn.textContent = 'Completar ambos casos para enviar';
+  }
+}
+
+// =====================================================
+// RESPUESTAS CORRECTAS
+// =====================================================
+const ANSWERS = {
+  c1p1r: { value: 37500, type: 'number' },
+  c1p2r: { value: 106250000, type: 'number' },
+  c1p3r: { value: 9520000, type: 'number' },
+  c1p4r: { value: 45000, type: 'number' },
+  c1p5r: { value: 118276000, type: 'number' },
+  c1p6r: { value: 'RPT-Enero-Cobre', type: 'text' },
+  c1p7r: { value: 2783333.33, type: 'number', tolerance: 1 },
+  c2p1r: { value: 5700000, type: 'number' },
+  c2p2r: { value: 2500, type: 'number' },
+  c2p3r: { value: 2445000, type: 'number' },
+  c2p4r: { value: 755000, type: 'number' },
+  c2p5r: { value: 4765.96, type: 'number', tolerance: 1 },
+  c2p6r: { value: 'FAC-2026-V001-Refrigerada', type: 'text' },
+  c2p7r: { value: 3700000, type: 'number' },
+};
 
 let grupoRegistrado = '';
 let integrantesRegistrados = '';
@@ -769,68 +1002,44 @@ function switchTab(casoId) {
 
 function evaluateAnswers() {
   let correct = 0;
-  let total = Object.keys(ANSWERS).length;
-  let details = [];
-
+  const total = Object.keys(ANSWERS).length;
   for (const [id, answer] of Object.entries(ANSWERS)) {
-    const input = document.getElementById(id);
-    if (!input) continue;
-    const userVal = input.value.trim();
+    const div = document.getElementById(id);
+    if (!div) continue;
+    const rawVal = div.dataset.rawValue;
+    if (rawVal === undefined || rawVal === '') { div.className = 'result-display'; continue; }
     let isCorrect = false;
-
     if (answer.type === 'number') {
-      const num = parseFloat(userVal);
-      if (!isNaN(num)) {
-        isCorrect = Math.abs(num - answer.value) <= (answer.tolerance || 0.5);
-      }
+      const num = parseFloat(rawVal);
+      if (!isNaN(num)) isCorrect = Math.abs(num - answer.value) <= (answer.tolerance || 0.5);
     } else {
-      isCorrect = userVal.toLowerCase().replace(/\s+/g,'') === answer.value.toLowerCase().replace(/\s+/g,'');
+      isCorrect = String(rawVal).toLowerCase().replace(/\s+/g,'') === answer.value.toLowerCase().replace(/\s+/g,'');
     }
-
-    if (isCorrect) {
-      correct++;
-      input.classList.add('correct');
-      input.classList.remove('incorrect');
-    } else if (userVal) {
-      input.classList.add('incorrect');
-      input.classList.remove('correct');
-    }
+    if (isCorrect) { correct++; div.className = 'result-display correct'; }
+    else { div.className = 'result-display incorrect'; }
   }
-
   return { correct, total, pct: Math.round((correct / total) * 100) };
 }
 
 function generateCode(grupo, correct, total) {
-  // Genera un codigo verificable: G{grupo}-{correct}/{total}-{hash}
   const data = `G${grupo}-${correct}-${total}-ICI2026`;
   let hash = 0;
-  for (let i = 0; i < data.length; i++) {
-    const chr = data.charCodeAt(i);
-    hash = ((hash << 5) - hash) + chr;
-    hash |= 0;
-  }
-  const hexHash = Math.abs(hash).toString(36).toUpperCase().slice(0, 4);
-  return `G${grupo}-${correct}/${total}-${hexHash}`;
+  for (let i = 0; i < data.length; i++) { hash = ((hash << 5) - hash) + data.charCodeAt(i); hash |= 0; }
+  return `G${grupo}-${correct}/${total}-${Math.abs(hash).toString(36).toUpperCase().slice(0,4)}`;
 }
 
 function submitAnswers() {
-  // Check formulas are filled
-  let formulasFilled = 0;
-  let formulasTotal = 0;
-  document.querySelectorAll('[id$="f"]').forEach(el => {
-    if (el.id.match(/c[12]p\df/)) {
-      formulasTotal++;
-      if (el.value.trim()) formulasFilled++;
-    }
-  });
-
-  if (formulasFilled < formulasTotal * 0.5) {
+  // Check formulas filled
+  let filled = 0, total = 0;
+  document.querySelectorAll('.formula-input').forEach(el => { total++; if (el.value.trim()) filled++; });
+  if (filled < total * 0.5) {
     if (!confirm('Han completado menos de la mitad de las formulas. Desean enviar de todas formas?')) return;
   }
+  // Auto-calculate any uncalculated formulas
+  document.querySelectorAll('.formula-input').forEach(el => { if (el.value.trim()) calcFormula(el.id); });
 
   const result = evaluateAnswers();
   const code = generateCode(grupoRegistrado, result.correct, result.total);
-
   document.getElementById('resultGrupo').textContent = grupoRegistrado;
   document.getElementById('resultScore').textContent = `${result.correct} de ${result.total} correctas (${result.pct}%)`;
   document.getElementById('resultCode').textContent = code;
@@ -839,122 +1048,87 @@ function submitAnswers() {
   document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth' });
 }
 
-function buildWhatsAppMessage() {
+// =====================================================
+// ENVIO DE RESULTADOS
+// =====================================================
+
+const PROFESOR_EMAIL = 'ingiciuls@gmail.com';
+
+const C1_LABELS = ['Produccion Cobre trimestre','Ingreso Cobre Enero','Costo total Febrero','Precio Molibdeno (BUSCARV)','Margen operacional Enero','Codigo reporte (CONCATENAR)','Promedio energia'];
+const C2_LABELS = ['Ingresos LS-SCL Refrigerada','Costo/km Minera (BUSCARV)','Costo total V003','Utilidad V003','Ingreso promedio/km LS-SCL','Codigo factura (CONCATENAR)','General + Marzo'];
+
+function buildMessage(useBold) {
+  const b = useBold ? '*' : '';
   const code = document.getElementById('resultCode').textContent;
   const score = document.getElementById('resultScore').textContent;
-
-  const c1Labels = [
-    'Produccion Cobre trimestre',
-    'Ingreso Cobre Enero',
-    'Costo total Febrero',
-    'Precio Molibdeno (BUSCARV)',
-    'Margen operacional Enero',
-    'Codigo reporte (CONCATENAR)',
-    'Promedio energia'
-  ];
-  const c2Labels = [
-    'Ingresos LS-SCL Refrigerada',
-    'Costo/km Minera (BUSCARV)',
-    'Costo total V003',
-    'Utilidad V003',
-    'Ingreso promedio/km LS-SCL',
-    'Codigo factura (CONCATENAR)',
-    'General + Marzo'
-  ];
-
-  let msg = `*DESAFIO EXCEL ICI - ULS 2026*\n`;
-  msg += `Grupo: *${grupoRegistrado}*\n`;
+  let msg = `${b}DESAFIO EXCEL ICI - ULS 2026${b}\n`;
+  msg += `Grupo: ${b}${grupoRegistrado}${b}\n`;
   msg += `Integrantes: ${integrantesRegistrados}\n`;
-  msg += `Resultado: *${score}*\n`;
-  msg += `Codigo: *${code}*\n`;
+  msg += `Resultado: ${b}${score}${b}\n`;
+  msg += `Codigo: ${b}${code}${b}\n`;
   msg += `\n--- CASO 1: MINERA ---\n`;
   for (let i = 1; i <= 7; i++) {
     const f = document.getElementById(`c1p${i}f`)?.value.trim() || '(vacio)';
-    const r = document.getElementById(`c1p${i}r`)?.value.trim() || '(vacio)';
-    msg += `${i}. ${c1Labels[i-1]}\n   Formula: ${f}\n   Resultado: ${r}\n`;
+    const r = document.getElementById(`c1p${i}r`)?.textContent || '(vacio)';
+    msg += `${i}. ${C1_LABELS[i-1]}\n   Formula: ${f}\n   Resultado: ${r}\n`;
   }
   msg += `\n--- CASO 2: LOGISTICA ---\n`;
   for (let i = 1; i <= 7; i++) {
     const f = document.getElementById(`c2p${i}f`)?.value.trim() || '(vacio)';
-    const r = document.getElementById(`c2p${i}r`)?.value.trim() || '(vacio)';
-    msg += `${i}. ${c2Labels[i-1]}\n   Formula: ${f}\n   Resultado: ${r}\n`;
+    const r = document.getElementById(`c2p${i}r`)?.textContent || '(vacio)';
+    msg += `${i}. ${C2_LABELS[i-1]}\n   Formula: ${f}\n   Resultado: ${r}\n`;
   }
-
   return msg;
 }
 
-// ===== CORREO PROFESOR =====
-const PROFESOR_EMAIL = 'ingiciuls@gmail.com';
-
 function sendEmail() {
   const code = document.getElementById('resultCode').textContent;
-  const score = document.getElementById('resultScore').textContent;
   const subject = `Desafio Excel ICI - Grupo ${grupoRegistrado} - ${code}`;
-  const body = buildWhatsAppMessage().replace(/\*/g, ''); // Sin asteriscos de WhatsApp
+  const body = buildMessage(false);
   window.open(`mailto:${PROFESOR_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_self');
 }
 
 function sendWhatsApp() {
-  const msg = buildWhatsAppMessage();
-  const encoded = encodeURIComponent(msg);
-  window.open(`https://wa.me/?text=${encoded}`, '_blank');
+  window.open(`https://wa.me/?text=${encodeURIComponent(buildMessage(true))}`, '_blank');
 }
 
 function copyResult() {
-  const msg = buildWhatsAppMessage();
+  const msg = buildMessage(false);
   navigator.clipboard.writeText(msg).then(() => {
-    alert('Mensaje copiado. Peguenlo en el grupo de WhatsApp del curso.');
+    alert('Mensaje copiado. Peguenlo en el grupo de WhatsApp o correo.');
   }).catch(() => {
-    // Fallback para navegadores que no soporten clipboard API
-    const ta = document.createElement('textarea');
-    ta.value = msg;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
+    const ta = document.createElement('textarea'); ta.value = msg;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
     document.body.removeChild(ta);
-    alert('Mensaje copiado. Peguenlo en el grupo de WhatsApp del curso.');
+    alert('Mensaje copiado.');
   });
 }
 
-// ===== MODO PROFESOR =====
-function toggleProfMode() {
-  const panel = document.getElementById('profPanel');
-  panel.classList.toggle('show');
-}
+// =====================================================
+// MODO PROFESOR
+// =====================================================
+function toggleProfMode() { document.getElementById('profPanel').classList.toggle('show'); }
 
 function unlockProf() {
   if (document.getElementById('profPassword').value === 'ici2026') {
     document.getElementById('profContent').style.display = 'block';
     document.getElementById('profPassword').parentElement.style.display = 'none';
-  } else {
-    alert('Clave incorrecta');
-  }
+  } else { alert('Clave incorrecta'); }
 }
 
-function verifyCode(inputCode) {
-  const code = inputCode || document.getElementById('profCode').value.trim().toUpperCase();
-  const resultDiv = document.getElementById('profResult');
-
-  // Parse code: G{grupo}-{correct}/{total}-{hash}
+function verifyCode() {
+  const code = document.getElementById('profCode').value.trim().toUpperCase();
+  const rd = document.getElementById('profResult');
   const match = code.match(/^G(\d+)-(\d+)\/(\d+)-([A-Z0-9]+)$/);
-  if (!match) {
-    resultDiv.innerHTML = '<div class="prof-result invalid"><strong>Codigo invalido.</strong> Formato esperado: G1-10/14-XXXX</div>';
-    return;
-  }
-
-  const [, grupo, correct, total, hash] = match;
-  const expectedCode = generateCode(grupo, parseInt(correct), parseInt(total));
-
-  if (expectedCode.toUpperCase() === code) {
-    const pct = Math.round((parseInt(correct) / parseInt(total)) * 100);
-    let emoji = pct >= 80 ? '&#9989;' : pct >= 50 ? '&#9888;' : '&#10060;';
-    resultDiv.innerHTML = `<div class="prof-result valid">
-      ${emoji} <strong>Codigo VALIDO</strong><br>
-      Grupo: ${grupo} | Correctas: ${correct}/${total} (${pct}%)<br>
-      <strong>Nota sugerida: ${(1 + 6 * (pct / 100)).toFixed(1)}</strong>
-    </div>`;
+  if (!match) { rd.innerHTML = '<div class="prof-result invalid"><strong>Codigo invalido.</strong></div>'; return; }
+  const [, grupo, correct, total] = match;
+  const expected = generateCode(grupo, parseInt(correct), parseInt(total));
+  if (expected.toUpperCase() === code) {
+    const pct = Math.round((parseInt(correct)/parseInt(total))*100);
+    const emoji = pct >= 80 ? '&#9989;' : pct >= 50 ? '&#9888;' : '&#10060;';
+    rd.innerHTML = `<div class="prof-result valid">${emoji} <strong>VALIDO</strong> | Grupo ${grupo} | ${correct}/${total} (${pct}%) | <strong>Nota: ${(1+6*(pct/100)).toFixed(1)}</strong></div>`;
   } else {
-    resultDiv.innerHTML = '<div class="prof-result invalid"><strong>&#10060; Codigo MANIPULADO o INVALIDO.</strong> El hash no coincide.</div>';
+    rd.innerHTML = '<div class="prof-result invalid"><strong>&#10060; CODIGO MANIPULADO</strong></div>';
   }
 }
 </script>
