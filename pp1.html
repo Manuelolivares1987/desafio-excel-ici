@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PP1 - Introduccion a la ICI - ULS 2026</title>
+<style>
+:root{--primary:#1a3a5c;--accent:#2980b9;--success:#27ae60;--warning:#f39c12;--danger:#e74c3c;--bg:#f0f4f8;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:#333;min-height:100vh}
+.header{background:linear-gradient(135deg,var(--primary),#1c2e4a);color:#fff;padding:18px 20px;text-align:center;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.header h1{font-size:1.3rem;margin-bottom:3px}
+.header-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.timer{font-family:'Consolas',monospace;font-size:1.4rem;font-weight:900;padding:6px 16px;border-radius:8px;background:rgba(255,255,255,.15)}
+.timer.warning{background:var(--warning);color:#000}
+.timer.danger{background:var(--danger);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.progress-bar{display:flex;gap:4px;margin-top:8px}
+.progress-step{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.2);transition:.3s}
+.progress-step.done{background:var(--success)}
+.progress-step.active{background:var(--warning)}
+.container{max-width:900px;margin:0 auto;padding:16px}
+.card{background:var(--card);border-radius:12px;padding:22px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.card h2{color:var(--primary);margin-bottom:12px;font-size:1.15rem}
+.card h3{color:var(--primary);margin-bottom:8px;font-size:1.05rem}
+
+/* Forms */
+.form-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.form-row label{font-weight:600;min-width:100px}
+.form-row input,.form-row select{flex:1;padding:10px 12px;border:2px solid #ddd;border-radius:8px;font-size:1rem;min-width:180px}
+.form-row input:focus{border-color:var(--accent);outline:none}
+
+/* Sections */
+.section{display:none}
+.section.active{display:block}
+.section-header{background:var(--accent);color:#fff;padding:14px 20px;border-radius:10px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.section-header h2{color:#fff;margin:0;font-size:1.1rem}
+.section-badge{background:rgba(255,255,255,.2);padding:4px 12px;border-radius:20px;font-size:.85rem}
+
+/* MC */
+.mc-question{background:#fafbfc;border:2px solid #e0e5ec;border-radius:10px;padding:16px;margin-bottom:14px}
+.mc-question.answered{border-color:var(--accent)}
+.mc-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:.85rem;margin-right:8px;flex-shrink:0}
+.mc-text{font-weight:600;color:var(--primary);margin-bottom:12px;display:flex;align-items:flex-start}
+.mc-text span{padding-top:3px}
+.mc-options{display:flex;flex-direction:column;gap:8px}
+.mc-option{display:flex;align-items:center;gap:10px;padding:11px 14px;border:2px solid #e0e5ec;border-radius:8px;cursor:pointer;transition:.2s;font-size:.95rem}
+.mc-option:hover{border-color:var(--accent);background:#f0f7ff}
+.mc-option.selected{border-color:var(--accent);background:#e8f4fd;font-weight:600}
+.mc-option input{display:none}
+.mc-letter{font-weight:700;color:var(--accent);min-width:20px}
+
+/* Excel tables */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}
+.excel-table{border-collapse:collapse;font-size:.82rem;min-width:100%}
+.excel-table th,.excel-table td{padding:6px 9px;border:1px solid #c0c0c0;text-align:center;white-space:nowrap}
+.excel-table .col-header{background:#e8eaed;color:#444;font-weight:700;font-size:.78rem}
+.excel-table .row-header{background:#e8eaed;color:#444;font-weight:700;width:30px}
+.excel-table .cell{background:#fff;text-align:right}
+.excel-table .cell-text{text-align:left}
+.table-label{font-size:.88rem;font-weight:700;color:var(--primary);margin:14px 0 4px}
+.table-note{font-size:.78rem;color:#666;font-style:italic;margin-bottom:4px}
+
+/* Formula */
+.pregunta{background:#fafbfc;border:2px solid #e0e5ec;border-radius:10px;padding:14px;margin-bottom:12px}
+.pregunta:focus-within{border-color:var(--accent)}
+.pregunta-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pregunta-num{background:var(--accent);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0}
+.pregunta-text{font-weight:600;color:var(--primary);font-size:.92rem}
+.hint{color:#666;font-size:.8rem;margin-bottom:6px;font-style:italic}
+.badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:.72rem;font-weight:700;background:#e8f0fe;color:var(--accent)}
+.formula-row{display:flex;gap:8px;align-items:center;margin-bottom:5px;flex-wrap:wrap}
+.formula-row label{font-size:.8rem;color:#555;font-weight:600;min-width:60px}
+.formula-input{flex:1;padding:9px 11px;border:2px solid #ccc;border-radius:8px;font-family:'Consolas',monospace;font-size:.9rem;min-width:160px}
+.formula-input:focus{border-color:var(--accent);outline:none;background:#fffff0}
+.btn-calc{padding:9px 14px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;font-size:.82rem;white-space:nowrap}
+.result-display{padding:7px 12px;border-radius:8px;font-family:'Consolas',monospace;font-size:.9rem;font-weight:700;min-height:36px;display:flex;align-items:center;border:2px solid #e0e0e0;background:#f8f9fa}
+.result-display.calculated{background:#eafaf1;border-color:var(--success);color:var(--success)}
+.result-display.error{background:#fdf0ef;border-color:var(--danger);color:var(--danger);font-size:.78rem}
+
+/* Reasoning */
+.reasoning-context{background:#fff8e1;border-left:4px solid var(--warning);padding:15px;border-radius:0 8px 8px 0;margin-bottom:16px;line-height:1.6;font-size:.92rem}
+.reasoning-q{margin-bottom:16px}
+.reasoning-q label{display:block;font-weight:600;color:var(--primary);margin-bottom:6px;font-size:.95rem}
+.reasoning-q textarea{width:100%;min-height:120px;padding:12px;border:2px solid #ddd;border-radius:8px;font-family:inherit;font-size:.92rem;resize:vertical;line-height:1.5}
+.reasoning-q textarea:focus{border-color:var(--accent);outline:none}
+.char-count{text-align:right;font-size:.75rem;color:#999;margin-top:2px}
+
+/* Buttons */
+.btn{padding:13px 24px;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:.3s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#2471a3}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-block{width:100%}
+.btn[disabled]{background:#bdc3c7;color:#7f8c8d;cursor:not-allowed}
+.btn-send{padding:13px 20px;border:none;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;color:#fff;transition:.3s;width:100%;max-width:380px}
+
+/* Result */
+.result-panel{display:none;background:linear-gradient(135deg,var(--primary),#2c3e50);color:#fff;border-radius:12px;padding:28px;text-align:center;margin-top:16px}
+.result-panel.show{display:block}
+.result-code{font-family:'Consolas',monospace;font-size:2rem;font-weight:900;letter-spacing:4px;background:rgba(255,255,255,.15);padding:10px 22px;border-radius:10px;margin:10px 0;display:inline-block}
+
+/* Prof */
+.prof-toggle{position:fixed;bottom:16px;right:16px;background:var(--primary);color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.3);z-index:100}
+.prof-mode{display:none;background:var(--card);border-radius:12px;padding:22px;margin-top:16px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.prof-mode.show{display:block}
+.prof-input{display:flex;gap:8px;margin-bottom:12px}
+.prof-input input{flex:1;padding:10px;border:2px solid #ddd;border-radius:8px;font-family:monospace;font-size:1rem;letter-spacing:2px;text-transform:uppercase}
+.prof-result{padding:12px;border-radius:8px;margin-top:8px}
+.prof-result.valid{background:#eafaf1;border:2px solid var(--success)}
+.prof-result.invalid{background:#fdf0ef;border:2px solid var(--danger)}
+
+.warning-box{background:#fdf0ef;border:2px solid var(--danger);border-radius:10px;padding:14px;margin-bottom:14px;font-size:.9rem;color:#721c24}
+
+@media(max-width:600px){
+  .container{padding:10px}
+  .card{padding:14px}
+  .form-row{flex-direction:column}
+  .form-row input,.form-row select{min-width:0;width:100%}
+  .header h1{font-size:1.1rem}
+  .timer{font-size:1.1rem}
+  .mc-option{padding:10px 12px;font-size:.88rem}
+  .excel-table{font-size:.72rem}
+  .excel-table th,.excel-table td{padding:4px 5px}
+  .formula-row{flex-direction:column}
+  .formula-input{min-width:0;width:100%}
+  .section-header{flex-direction:column;gap:6px;text-align:center}
+  .reasoning-q textarea{min-height:100px}
+}
+</style>
+</head>
+<body>
+
+<div class="header" id="mainHeader">
+  <div class="header-row">
+    <div>
+      <h1>PP1 &mdash; Introduccion a la ICI</h1>
+      <div style="font-size:.82rem;opacity:.8">Jueves 16 Abril 2026 &bull; ULS</div>
+    </div>
+    <div class="timer" id="timer">90:00</div>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-step" id="prog1"></div>
+    <div class="progress-step" id="prog2"></div>
+    <div class="progress-step" id="prog3"></div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ====== REGISTRO ====== -->
+<div class="section active" id="secRegistro">
+  <div class="card">
+    <h2>Identificacion del Alumno</h2>
+    <div class="warning-box">
+      <strong>IMPORTANTE:</strong> Esta prueba es individual. Al ingresar tu RUT se genera una version unica.
+      El orden de las preguntas, las alternativas y los datos del caso Excel son distintos para cada alumno.
+      Cualquier intento de copia sera detectado.
+    </div>
+    <div class="form-row">
+      <label>RUT:</label>
+      <input type="text" id="inputRut" placeholder="12345678-9" maxlength="12">
+    </div>
+    <div class="form-row">
+      <label>Nombre:</label>
+      <input type="text" id="inputNombre" placeholder="Nombre completo">
+    </div>
+    <br>
+    <button class="btn btn-primary btn-block" onclick="iniciarPrueba()">Comenzar Prueba</button>
+  </div>
+</div>
+
+<!-- ====== SECCION 1: SELECCION MULTIPLE ====== -->
+<div class="section" id="secMC">
+  <div class="section-header">
+    <h2>Seccion 1: Seleccion Multiple</h2>
+    <span class="section-badge">8 preguntas &bull; 33.3% de la nota</span>
+  </div>
+  <div class="card">
+    <p style="font-size:.88rem;color:#555;margin-bottom:14px;">Selecciona la alternativa correcta para cada pregunta. Una vez que avances a la siguiente seccion, NO podras volver.</p>
+    <div id="mcContainer"></div>
+  </div>
+  <button class="btn btn-primary btn-block" id="btnNextToExcel" onclick="avanzarSeccion(2)" disabled>Completar todas las preguntas para avanzar</button>
+</div>
+
+<!-- ====== SECCION 2: CASO EXCEL ====== -->
+<div class="section" id="secExcel">
+  <div class="section-header">
+    <h2>Seccion 2: Caso Excel</h2>
+    <span class="section-badge">5 preguntas &bull; 33.3% de la nota</span>
+  </div>
+  <div id="excelContainer"></div>
+  <button class="btn btn-primary btn-block" id="btnNextToReasoning" onclick="avanzarSeccion(3)" disabled>Completar todas las formulas para avanzar</button>
+</div>
+
+<!-- ====== SECCION 3: RAZONAMIENTO ====== -->
+<div class="section" id="secReasoning">
+  <div class="section-header">
+    <h2>Seccion 3: Caso de Razonamiento Aplicado</h2>
+    <span class="section-badge">3 preguntas abiertas &bull; 33.3% de la nota</span>
+  </div>
+  <div id="reasoningContainer"></div>
+  <button class="btn btn-success btn-block" id="btnSubmitExam" onclick="enviarPrueba()" disabled>Completar todas las respuestas para enviar</button>
+</div>
+
+<!-- ====== RESULTADO ====== -->
+<div class="result-panel" id="resultPanel">
+  <h2>Prueba Enviada</h2>
+  <div style="font-size:1rem;margin:8px 0;" id="resultInfo"></div>
+  <div class="result-code" id="resultCode"></div>
+  <div style="margin:10px 0;font-size:.9rem;opacity:.8" id="resultDetail"></div>
+  <div style="display:flex;flex-direction:column;gap:10px;align-items:center;margin-top:14px;">
+    <button class="btn-send" onclick="sendEmail()" style="background:#EA4335;">&#9993; Enviar por Correo</button>
+    <button class="btn-send" onclick="sendWhatsApp()" style="background:#25D366;">&#128172; Enviar por WhatsApp</button>
+    <button class="btn-send" onclick="copyResult()" style="background:#3b82f6;">&#128203; Copiar al Portapapeles</button>
+  </div>
+  <p style="opacity:.5;font-size:.75rem;margin-top:10px;">El correo o WhatsApp se abre con el mensaje listo. Solo presiona Enviar.</p>
+</div>
+
+</div>
+
+<!-- PROFESOR -->
+<button class="prof-toggle" onclick="toggleProf()" title="Modo Profesor">&#9881;</button>
+<div class="prof-mode" id="profPanel">
+  <h2 style="color:var(--primary);margin-bottom:12px;">Modo Profesor (Clave: pp1ici2026)</h2>
+  <div class="prof-input">
+    <input type="password" id="profPass" placeholder="Clave">
+    <button class="btn btn-warning" onclick="unlockProf()">Desbloquear</button>
+  </div>
+  <div id="profContent" style="display:none;">
+    <h3>Verificar Codigo</h3>
+    <div class="prof-input">
+      <input type="text" id="profCodeInput" placeholder="Codigo del alumno" style="text-transform:uppercase;">
+      <button class="btn btn-primary" onclick="verifyCode()">Verificar</button>
+    </div>
+    <div id="profResultDiv"></div>
+    <hr style="margin:16px 0;">
+    <h3>Respuestas MC (orden original)</h3>
+    <div style="background:#f8f9fa;padding:12px;border-radius:8px;font-size:.82rem;" id="profMCAnswers"></div>
+    <hr style="margin:16px 0;">
+    <h3>Respuestas Excel (valores base)</h3>
+    <div style="background:#f8f9fa;padding:12px;border-radius:8px;font-size:.82rem;" id="profExcelAnswers"></div>
+    <hr style="margin:16px 0;">
+    <h3>Escenarios Razonamiento</h3>
+    <div style="background:#f8f9fa;padding:12px;border-radius:8px;font-size:.82rem;" id="profReasoningInfo"></div>
+  </div>
+</div>
+
+<script>
+// =====================================================
+// BANCO DE PREGUNTAS MC (orden original)
+// =====================================================
+const MC_BANK = [
+  {
+    id:'q1',
+    text:'Segun la definicion de ABET, la ingenieria es la profesion que aplica conocimientos en ciencias matematicas y naturales para:',
+    options:[
+      {key:'a', text:'Descubrir nuevas leyes de la naturaleza mediante experimentacion'},
+      {key:'b', text:'Utilizar economicamente los recursos naturales en beneficio de la humanidad'},
+      {key:'c', text:'Fabricar y comercializar productos tecnologicos en el mercado global'},
+      {key:'d', text:'Administrar empresas y gestionar recursos humanos de forma eficiente'}
+    ],
+    correct:'b'
+  },
+  {
+    id:'q2',
+    text:'La pregunta fundamental que diferencia a la INGENIERIA de la CIENCIA es:',
+    options:[
+      {key:'a', text:'Ciencia: "¿Por que ocurre?" / Ingenieria: "¿Como diseno, construyo y optimizo?"'},
+      {key:'b', text:'Ciencia: "¿Cuanto cuesta?" / Ingenieria: "¿Como lo vendo?"'},
+      {key:'c', text:'Ciencia: "¿Quien lo invento?" / Ingenieria: "¿Cuando se puede usar?"'},
+      {key:'d', text:'Ciencia: "¿Es posible?" / Ingenieria: "¿Es rentable para el mercado?"'}
+    ],
+    correct:'a'
+  },
+  {
+    id:'q3',
+    text:'Un ingeniero que trabaja creando planos, especificaciones tecnicas y modelos para una planta desalinizadora en Coquimbo esta realizando la funcion de:',
+    options:[
+      {key:'a', text:'Investigacion'},
+      {key:'b', text:'Desarrollo'},
+      {key:'c', text:'Diseno'},
+      {key:'d', text:'Consultoria'}
+    ],
+    correct:'c'
+  },
+  {
+    id:'q4',
+    text:'Segun estudios de Harvard Business Review, ¿que porcentaje del exito profesional depende de las habilidades blandas (soft skills)?',
+    options:[
+      {key:'a', text:'15%'},
+      {key:'b', text:'50%'},
+      {key:'c', text:'70%'},
+      {key:'d', text:'85%'}
+    ],
+    correct:'d'
+  },
+  {
+    id:'q5',
+    text:'¿Quien es considerado el "padre de la Ingenieria Industrial" por su estudio cientifico del trabajo y la medicion de tiempos?',
+    options:[
+      {key:'a', text:'Henry Ford'},
+      {key:'b', text:'Frederick W. Taylor'},
+      {key:'c', text:'Taiichi Ohno'},
+      {key:'d', text:'W. Edwards Deming'}
+    ],
+    correct:'b'
+  },
+  {
+    id:'q6',
+    text:'¿Que hace UNICO al Ingeniero Civil Industrial comparado con otras especialidades de ingenieria?',
+    options:[
+      {key:'a', text:'Tiene los salarios mas altos del mercado laboral'},
+      {key:'b', text:'Es el unico ingeniero que puede ocupar cargos gerenciales'},
+      {key:'c', text:'Integra y optimiza sistemas completos de personas, materiales, informacion, equipos y energia'},
+      {key:'d', text:'Solo trabaja en el sector industrial y manufacturero'}
+    ],
+    correct:'c'
+  },
+  {
+    id:'q7',
+    text:'¿Cual de las siguientes NO es una de las 4 areas funcionales del perfil ICI-ULS?',
+    options:[
+      {key:'a', text:'Gestion Organizacional y Desarrollo'},
+      {key:'b', text:'Produccion y Logistica'},
+      {key:'c', text:'Marketing y Ventas'},
+      {key:'d', text:'Tecnologias de Informacion e Inteligencia de Negocios'}
+    ],
+    correct:'c'
+  },
+  {
+    id:'q8',
+    text:'Si una empresa fuera un cuerpo humano, el ICI seria el medico que entiende como funciona TODO el cuerpo junto. En esta analogia, ¿que rol cumple el Ingeniero Comercial?',
+    options:[
+      {key:'a', text:'Disena los organos'},
+      {key:'b', text:'Encuentra el mejor alimento en el mercado'},
+      {key:'c', text:'Nutre el cuerpo adecuadamente'},
+      {key:'d', text:'Opera y repara los organos danados'}
+    ],
+    correct:'b'
+  }
+];
+
+// =====================================================
+// DATOS EXCEL BASE (se parametrizan por RUT)
+// =====================================================
+const EXCEL_BASE = {
+  // Supermercado FreshMart - Ventas trimestrales
+  ventas: {
+    // [categoria, enero, febrero, marzo]
+    rows: [
+      ['Abarrotes', 8500000, 7800000, 9200000],
+      ['Lacteos', 5200000, 4900000, 5600000],
+      ['Carnes', 6800000, 7200000, 6500000],
+      ['Frutas y Verduras', 3900000, 4100000, 4500000],
+      ['Bebidas', 4200000, 3800000, 4000000],
+    ]
+  },
+  costos: {
+    // [codigo, categoria, margen_costo_%]
+    rows: [
+      ['CAT-AB', 'Abarrotes', 0.35],
+      ['CAT-LA', 'Lacteos', 0.42],
+      ['CAT-CA', 'Carnes', 0.28],
+      ['CAT-FV', 'Frutas y Verduras', 0.50],
+      ['CAT-BE', 'Bebidas', 0.38],
+    ]
+  },
+  empleados: {
+    // [sucursal, empleados, sueldo_promedio]
+    rows: [
+      ['La Serena Centro', 25, 550000],
+      ['Coquimbo', 18, 520000],
+      ['Ovalle', 15, 490000],
+    ]
+  }
+};
+
+// =====================================================
+// ESCENARIOS RAZONAMIENTO (4 variantes)
+// =====================================================
+const SCENARIOS = [
+  {
+    title: 'Pesquera Mar Azul SpA — Coquimbo',
+    context: 'Eres un ICI recien contratado como analista en Pesquera Mar Azul SpA, una empresa pesquera artesanal de Coquimbo con 45 trabajadores. La empresa enfrenta una crisis: la captura ha disminuido un 40% en el ultimo ano, los costos operacionales subieron un 25%, 3 de los 5 capitanes de embarcacion renunciaron, no existe un sistema formal de inventario (todo se registra en cuadernos), y los clientes (restaurantes y supermercados) se quejan de calidad inconsistente en el producto final. La gerenta general te pide un diagnostico y plan de accion.'
+  },
+  {
+    title: 'Solar del Norte SpA — Region de Atacama',
+    context: 'Trabajas como analista ICI en Solar del Norte SpA, empresa que instala paneles solares para empresas mineras y agricolas. La empresa tiene 30 empleados y opera desde Copiapo. Problemas actuales: los ultimos 4 proyectos se entregaron con un atraso promedio de 3 semanas, los presupuestos se exceden en un 30%, la satisfaccion de clientes bajo de 4.5 a 2.8 (escala 1-5), hay un alto desperdicio de materiales (15% de paneles se danan en instalacion), y los jefes de proyecto estan sobrecargados gestionando 3 obras simultaneas sin herramientas de planificacion. El directorio te pide un plan de mejora.'
+  },
+  {
+    title: 'Vina Estrella del Elqui — Valle del Elqui',
+    context: 'Te contrataron como analista ICI en Vina Estrella del Elqui, productora de pisco y vino con 60 trabajadores. La empresa exporta a 5 paises pero enfrenta serios problemas: el 15% de la produccion es rechazada en control de calidad, los contenedores de exportacion llegan danados al destino (3 reclamos en el ultimo trimestre), la linea de produccion se detuvo 3 veces el mes pasado por fallas en equipos, los operarios no siguen los procedimientos estandarizados, y no hay datos historicos digitalizados de produccion. La gerenta de operaciones necesita tu analisis y propuesta.'
+  },
+  {
+    title: 'FreshMarket Coquimbo — Cadena de Supermercados',
+    context: 'Eres analista ICI en FreshMarket, una cadena regional de supermercados con 5 sucursales y 120 empleados en la Region de Coquimbo. La empresa enfrenta multiples problemas: la merma de inventario es del 8% (el promedio de la industria es 2%), hay filas largas en las cajas generando quejas, los quiebres de stock de productos populares son frecuentes (ocurren 12 veces por semana), la rotacion de personal es del 45% anual, y las decisiones de compra se toman "por intuicion" sin analisis de datos. El gerente general quiere que diagnostiques la situacion y propongas soluciones.'
+  }
+];
+
+// =====================================================
+// VARIABLES GLOBALES
+// =====================================================
+let studentRut = '';
+let studentName = '';
+let seed = 0;
+let timerInterval = null;
+let timeRemaining = 90 * 60; // 90 minutos en segundos
+let currentSection = 0; // 0=registro, 1=MC, 2=Excel, 3=Reasoning
+let mcOrder = [];
+let mcOptionOrders = {};
+let excelMultiplier = 1;
+let scenarioIdx = 0;
+let examSubmitted = false;
+let mcAnswers = {};
+let excelCells = {};
+
+// =====================================================
+// FUNCIONES DE SEED/SHUFFLE
+// =====================================================
+function rutToSeed(rut) {
+  const clean = rut.replace(/[.\-]/g, '');
+  let s = 0;
+  for (let i = 0; i < clean.length; i++) s = ((s << 5) - s) + clean.charCodeAt(i) | 0;
+  return Math.abs(s);
+}
+
+function seededRandom(s) {
+  s = (s * 9301 + 49297) % 233280;
+  return { value: s / 233280, next: s };
+}
+
+function shuffleWithSeed(arr, s) {
+  const result = [...arr];
+  let current = s;
+  for (let i = result.length - 1; i > 0; i--) {
+    const r = seededRandom(current);
+    current = r.next;
+    const j = Math.floor(r.value * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+// =====================================================
+// INICIAR PRUEBA
+// =====================================================
+function iniciarPrueba() {
+  const rut = document.getElementById('inputRut').value.trim();
+  const nombre = document.getElementById('inputNombre').value.trim();
+  if (!rut || rut.length < 8) { alert('Ingresa tu RUT completo (ej: 12345678-9)'); return; }
+  if (!nombre) { alert('Ingresa tu nombre completo'); return; }
+
+  studentRut = rut;
+  studentName = nombre;
+  seed = rutToSeed(rut);
+
+  // Generar version unica
+  generateMC();
+  generateExcel();
+  generateReasoning();
+
+  // Iniciar timer
+  startTimer();
+  avanzarSeccion(1);
+}
+
+// =====================================================
+// TIMER
+// =====================================================
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeRemaining--;
+    updateTimerDisplay();
+    if (timeRemaining <= 0) {
+      clearInterval(timerInterval);
+      if (!examSubmitted) autoSubmit();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timeRemaining / 60);
+  const s = timeRemaining % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.classList.remove('warning','danger');
+  if (timeRemaining <= 300) el.classList.add('danger');
+  else if (timeRemaining <= 600) el.classList.add('warning');
+}
+
+function autoSubmit() {
+  alert('Se acabo el tiempo. Tu prueba sera enviada con las respuestas completadas.');
+  enviarPrueba(true);
+}
+
+// =====================================================
+// NAVEGACION
+// =====================================================
+function avanzarSeccion(sec) {
+  if (sec > 1 && currentSection < sec) {
+    if (!confirm('Una vez que avances, NO podras volver a la seccion anterior. ¿Deseas continuar?')) return;
+  }
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  currentSection = sec;
+  const sectionIds = ['secRegistro','secMC','secExcel','secReasoning'];
+  document.getElementById(sectionIds[sec]).classList.add('active');
+
+  for (let i = 1; i <= 3; i++) {
+    const p = document.getElementById('prog' + i);
+    p.classList.remove('done','active');
+    if (i < sec) p.classList.add('done');
+    else if (i === sec) p.classList.add('active');
+  }
+  window.scrollTo(0, 0);
+}
+
+// =====================================================
+// SECCION 1: SELECCION MULTIPLE
+// =====================================================
+function generateMC() {
+  mcOrder = shuffleWithSeed([0,1,2,3,4,5,6,7], seed);
+  const container = document.getElementById('mcContainer');
+  let html = '';
+
+  mcOrder.forEach((qIdx, displayIdx) => {
+    const q = MC_BANK[qIdx];
+    // Shuffle options
+    const optOrder = shuffleWithSeed([0,1,2,3], seed + qIdx + 100);
+    mcOptionOrders[q.id] = optOrder;
+    const letters = ['A','B','C','D'];
+
+    html += `<div class="mc-question" id="mcq_${q.id}">
+      <div class="mc-text"><span class="mc-num">${displayIdx+1}</span><span>${q.text}</span></div>
+      <div class="mc-options">`;
+
+    optOrder.forEach((optIdx, letterIdx) => {
+      const opt = q.options[optIdx];
+      html += `<label class="mc-option" id="opt_${q.id}_${letterIdx}" onclick="selectMC('${q.id}',${letterIdx},'${opt.key}')">
+        <span class="mc-letter">${letters[letterIdx]})</span>
+        <span>${opt.text}</span>
+      </label>`;
+    });
+
+    html += `</div></div>`;
+  });
+  container.innerHTML = html;
+}
+
+function selectMC(qId, letterIdx, origKey) {
+  // Deselect all options for this question
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById(`opt_${qId}_${i}`);
+    if (el) el.classList.remove('selected');
+  }
+  document.getElementById(`opt_${qId}_${letterIdx}`).classList.add('selected');
+  document.getElementById(`mcq_${qId}`).classList.add('answered');
+  mcAnswers[qId] = origKey;
+  checkMCComplete();
+}
+
+function checkMCComplete() {
+  const allAnswered = MC_BANK.every(q => mcAnswers[q.id]);
+  const btn = document.getElementById('btnNextToExcel');
+  if (allAnswered) {
+    btn.disabled = false;
+    btn.className = 'btn btn-primary btn-block';
+    btn.textContent = 'Avanzar a Seccion 2: Caso Excel >';
+  }
+}
+
+// =====================================================
+// SECCION 2: CASO EXCEL
+// =====================================================
+function generateExcel() {
+  // Multiplier based on RUT (varies numbers ±10-30%)
+  const r = seededRandom(seed + 500);
+  excelMultiplier = 0.85 + (r.value * 0.30); // 0.85 to 1.15
+  const mult = excelMultiplier;
+
+  // Build cell data
+  const V = EXCEL_BASE.ventas.rows;
+  const C = EXCEL_BASE.costos.rows;
+  const E = EXCEL_BASE.empleados.rows;
+
+  // Round to clean numbers
+  const rn = (v) => Math.round(v * mult / 10000) * 10000;
+  const rn2 = (v) => Math.round(v * mult / 1000) * 1000;
+
+  excelCells = {
+    // Table 1: Ventas (rows 1-6)
+    A1:'Categoria',B1:'Enero',C1:'Febrero',D1:'Marzo',
+    A2:V[0][0],B2:rn(V[0][1]),C2:rn(V[0][2]),D2:rn(V[0][3]),
+    A3:V[1][0],B3:rn(V[1][1]),C3:rn(V[1][2]),D3:rn(V[1][3]),
+    A4:V[2][0],B4:rn(V[2][1]),C4:rn(V[2][2]),D4:rn(V[2][3]),
+    A5:V[3][0],B5:rn(V[3][1]),C5:rn(V[3][2]),D5:rn(V[3][3]),
+    A6:V[4][0],B6:rn(V[4][1]),C6:rn(V[4][2]),D6:rn(V[4][3]),
+    // Table 2: Costos/margen (rows 8-13)
+    A8:'Codigo',B8:'Categoria',C8:'Margen Costo %',
+    A9:C[0][0],B9:C[0][1],C9:C[0][2],
+    A10:C[1][0],B10:C[1][1],C10:C[1][2],
+    A11:C[2][0],B11:C[2][1],C11:C[2][2],
+    A12:C[3][0],B12:C[3][1],C12:C[3][2],
+    A13:C[4][0],B13:C[4][1],C13:C[4][2],
+    // Table 3: Empleados (rows 15-18)
+    A15:'Sucursal',B15:'Empleados',C15:'Sueldo Promedio',
+    A16:E[0][0],B16:E[0][1],C16:rn2(E[0][2]),
+    A17:E[1][0],B17:E[1][1],C17:rn2(E[1][2]),
+    A18:E[2][0],B18:E[2][1],C18:rn2(E[2][2]),
+  };
+
+  // Build HTML
+  const container = document.getElementById('excelContainer');
+  let h = `<div class="card">
+    <h3>Caso: Supermercado FreshMart &mdash; Region de Coquimbo</h3>
+    <div class="reasoning-context">
+      <strong>Contexto:</strong> Eres analista ICI en FreshMart, una cadena de supermercados de la Region de Coquimbo.
+      El gerente necesita un analisis financiero del primer trimestre 2026 usando los datos de tu hoja Excel.
+      <strong>Escribe las formulas referenciando las celdas que ves en las tablas (ej: B2, C9, etc).</strong>
+    </div>
+
+    <p class="table-label">Ventas por Categoria (CLP)</p>
+    <p class="table-note">Filas 1-6 de tu hoja Excel</p>
+    <div class="table-scroll"><table class="excel-table">
+    <tr><th class="row-header"></th><th class="col-header">A</th><th class="col-header">B</th><th class="col-header">C</th><th class="col-header">D</th></tr>
+    <tr><td class="row-header">1</td><td class="cell-text"><b>Categoria</b></td><td class="cell-text"><b>Enero</b></td><td class="cell-text"><b>Febrero</b></td><td class="cell-text"><b>Marzo</b></td></tr>`;
+  for (let r = 2; r <= 6; r++) {
+    h += `<tr><td class="row-header">${r}</td><td class="cell-text">${excelCells['A'+r]}</td><td class="cell">${excelCells['B'+r].toLocaleString('es-CL')}</td><td class="cell">${excelCells['C'+r].toLocaleString('es-CL')}</td><td class="cell">${excelCells['D'+r].toLocaleString('es-CL')}</td></tr>`;
+  }
+  h += `</table></div>
+
+    <p class="table-label">Margen de Costo por Categoria</p>
+    <p class="table-note">Filas 8-13 &bull; Columna C = porcentaje del costo sobre la venta (ej: 0.35 = 35%)</p>
+    <div class="table-scroll"><table class="excel-table">
+    <tr><th class="row-header"></th><th class="col-header">A</th><th class="col-header">B</th><th class="col-header">C</th></tr>
+    <tr><td class="row-header">8</td><td class="cell-text"><b>Codigo</b></td><td class="cell-text"><b>Categoria</b></td><td class="cell-text"><b>Margen Costo %</b></td></tr>`;
+  for (let r = 9; r <= 13; r++) {
+    h += `<tr><td class="row-header">${r}</td><td class="cell-text">${excelCells['A'+r]}</td><td class="cell-text">${excelCells['B'+r]}</td><td class="cell">${excelCells['C'+r]}</td></tr>`;
+  }
+  h += `</table></div>
+
+    <p class="table-label">Dotacion por Sucursal</p>
+    <p class="table-note">Filas 15-18</p>
+    <div class="table-scroll"><table class="excel-table">
+    <tr><th class="row-header"></th><th class="col-header">A</th><th class="col-header">B</th><th class="col-header">C</th></tr>
+    <tr><td class="row-header">15</td><td class="cell-text"><b>Sucursal</b></td><td class="cell-text"><b>Empleados</b></td><td class="cell-text"><b>Sueldo Promedio</b></td></tr>`;
+  for (let r = 16; r <= 18; r++) {
+    h += `<tr><td class="row-header">${r}</td><td class="cell-text">${excelCells['A'+r]}</td><td class="cell">${excelCells['B'+r]}</td><td class="cell">${excelCells['C'+r].toLocaleString('es-CL')}</td></tr>`;
+  }
+  h += `</table></div></div>`;
+
+  // Questions
+  const excelQs = [
+    {id:'ep1', text:'Venta total de Abarrotes en el trimestre (CLP)', hint:'Suma Enero+Febrero+Marzo de Abarrotes (fila 2)', badge:'SUMA', ph:'=SUMA(B2:D2)'},
+    {id:'ep2', text:'Usando BUSCARV, obtener el margen de costo de "Carnes" buscando por codigo "CAT-CA"', hint:'Buscar en tabla de costos (A9:C13), devolver columna 3', badge:'BUSCARV', ph:'=BUSCARV("CAT-CA";A9:C13;3;0)'},
+    {id:'ep3', text:'Costo total de Lacteos en Enero: Venta Enero * Margen de costo', hint:'Venta Lacteos Enero (B3) multiplicado por margen (C10)', badge:'MULTIPLICACION', ph:'=B3*C10'},
+    {id:'ep4', text:'Total de ventas de Enero solo para categorias "Abarrotes" y "Bebidas"', hint:'Sumar ventas de Enero donde categoria sea Abarrotes o Bebidas', badge:'SUMAR.SI.CONJUNTO', ph:'=SUMAR.SI.CONJUNTO(B2:B6;A2:A6;"Abarrotes")+SUMAR.SI.CONJUNTO(B2:B6;A2:A6;"Bebidas")'},
+    {id:'ep5', text:'Gasto total en sueldos de TODAS las sucursales (empleados * sueldo promedio de cada una, sumar todo)', hint:'Multiplicar empleados por sueldo en cada sucursal y sumar', badge:'MULT + SUMA', ph:'=B16*C16+B17*C17+B18*C18'},
+  ];
+
+  h += `<div class="card"><h3>Preguntas &mdash; Caso Excel</h3>`;
+  excelQs.forEach((q, i) => {
+    h += `<div class="pregunta">
+      <div class="pregunta-header"><span class="pregunta-num">${i+1}</span><span class="pregunta-text">${q.text}</span></div>
+      <p class="hint">${q.hint} <span class="badge">${q.badge}</span></p>
+      <div class="formula-row">
+        <label>Formula:</label>
+        <input type="text" class="formula-input" id="${q.id}f" data-caso="exam" placeholder="${q.ph}" onkeydown="if(event.key==='Enter')calcExam('${q.id}f')">
+        <button class="btn-calc" onclick="calcExam('${q.id}f')">Calcular</button>
+      </div>
+      <div class="formula-row">
+        <label>Resultado:</label>
+        <div class="result-display" id="${q.id}r">Esperando formula...</div>
+      </div>
+    </div>`;
+  });
+  h += `</div>`;
+  container.innerHTML = h;
+}
+
+// =====================================================
+// MOTOR DE FORMULAS (reutilizado)
+// =====================================================
+function cellVal(ref) { const v = excelCells[ref.toUpperCase()]; return v !== undefined ? v : undefined; }
+function colNum(l) { return l.toUpperCase().charCodeAt(0) - 64; }
+function numToCol(n) { return String.fromCharCode(64 + n); }
+
+function expandRange(rangeStr) {
+  const p = rangeStr.toUpperCase().split(':');
+  const m1 = p[0].match(/^([A-Z]+)(\d+)$/), m2 = p[1].match(/^([A-Z]+)(\d+)$/);
+  if (!m1||!m2) return [];
+  const c1=colNum(m1[1]),r1=parseInt(m1[2]),c2=colNum(m2[1]),r2=parseInt(m2[2]);
+  if (c1===c2) { const a=[]; for(let r=r1;r<=r2;r++){const v=cellVal(m1[1]+r);a.push(v!==undefined?v:0);} return a; }
+  if (r1===r2) { const a=[]; for(let c=c1;c<=c2;c++){const v=cellVal(numToCol(c)+r1);a.push(v!==undefined?v:0);} return a; }
+  const a=[]; for(let r=r1;r<=r2;r++){const row=[];for(let c=c1;c<=c2;c++){const v=cellVal(numToCol(c)+r);row.push(v!==undefined?v:'');}a.push(row);} return a;
+}
+function expandRangeCol(rangeStr) {
+  const p=rangeStr.toUpperCase().split(':');const m1=p[0].match(/^([A-Z]+)(\d+)$/),m2=p[1].match(/^([A-Z]+)(\d+)$/);
+  if(!m1||!m2)return[];const col=m1[1],r1=parseInt(m1[2]),r2=parseInt(m2[2]);
+  const a=[];for(let r=r1;r<=r2;r++){const v=cellVal(col+r);a.push(v!==undefined?v:'');}return a;
+}
+function splitArgs(str){const a=[];let d=0,c='';for(let i=0;i<str.length;i++){const ch=str[i];if(ch==='(')d++,c+=ch;else if(ch===')')d--,c+=ch;else if((ch===';'||ch===',')&&d===0)a.push(c.trim()),c='';else c+=ch;}if(c.trim())a.push(c.trim());return a;}
+function findParen(str,idx){if(str[idx]!=='(')return null;let d=0;for(let i=idx;i<str.length;i++){if(str[i]==='(')d++;else if(str[i]===')'){d--;if(d===0)return{s:idx,e:i};}}return null;}
+
+function evalFormula(formula) {
+  let expr=formula.trim();if(expr.startsWith('='))expr=expr.substring(1).trim();if(!expr)return{error:'Formula vacia'};
+  try{return{value:evalE(expr)};}catch(e){return{error:e.message||'Error'};}
+}
+function evalE(expr) {
+  expr=expr.trim();
+  const cm=expr.match(/^CONCATENAR?\s*\((.+)\)$/i);
+  if(cm){const args=splitArgs(cm[1]);return args.map(a=>String(resVal(a))).join('');}
+  if(expr.includes('&')&&!expr.match(/^(SUMA|BUSCARV|SUMAR)/i)){return expr.split('&').map(p=>String(resVal(p.trim()))).join('');}
+  const sm=expr.match(/^SUMAR\.SI\.CONJUNTO\s*\((.+)\)$/i);
+  if(sm)return evalSumIfs(sm[1]);
+  // SUMAR.SI.CONJUNTO inside arithmetic
+  let processed=expr;let safety=0;
+  while(processed.match(/SUMAR\.SI\.CONJUNTO\s*\(/i)&&safety<10){
+    const idx=processed.search(/SUMAR\.SI\.CONJUNTO\s*\(/i);const pi=processed.indexOf('(',idx);const pa=findParen(processed,pi);
+    if(!pa)break;const inner=processed.substring(pa.s+1,pa.e);const r=evalSumIfs(inner);processed=processed.substring(0,idx)+r+processed.substring(pa.e+1);safety++;
+  }
+  const bm=processed.match(/^BUSCARV\s*\((.+)\)$/i);if(bm)return evalBV(bm[1]);
+  safety=0;while(processed.match(/SUMA\s*\(/i)&&safety<10){
+    const idx=processed.search(/SUMA\s*\(/i);const pi=processed.indexOf('(',idx);const pa=findParen(processed,pi);
+    if(!pa)break;const inner=processed.substring(pa.s+1,pa.e);const r=evalSuma(inner);processed=processed.substring(0,idx)+r+processed.substring(pa.e+1);safety++;
+  }
+  safety=0;while(processed.match(/BUSCARV\s*\(/i)&&safety<10){
+    const idx=processed.search(/BUSCARV\s*\(/i);const pi=processed.indexOf('(',idx);const pa=findParen(processed,pi);
+    if(!pa)break;const inner=processed.substring(pa.s+1,pa.e);const r=evalBV(inner);processed=processed.substring(0,idx)+r+processed.substring(pa.e+1);safety++;
+  }
+  return evalArith(processed);
+}
+function evalSuma(argsStr){const args=splitArgs(argsStr);let t=0;for(const a of args){if(a.match(/^[A-Z]+\d+:[A-Z]+\d+$/i)){const v=expandRange(a);if(Array.isArray(v[0]))v.forEach(r=>r.forEach(x=>{if(typeof x==='number')t+=x;}));else v.forEach(x=>{if(typeof x==='number')t+=x;});}else t+=Number(resVal(a))||0;}return t;}
+function evalBV(argsStr){const args=splitArgs(argsStr);if(args.length<3)throw new Error('BUSCARV: 3+ argumentos');const lv=resVal(args[0]);const tr=expandRange(args[1].trim());const ci=parseInt(resVal(args[2]));if(!Array.isArray(tr[0]))throw new Error('Rango BUSCARV invalido');for(const row of tr){if(String(row[0]).toLowerCase()===String(lv).toLowerCase())return row[ci-1];}return '#N/A';}
+function evalSumIfs(argsStr){const args=splitArgs(argsStr);if(args.length<3||args.length%2===0)throw new Error('SUMAR.SI.CONJUNTO: args invalidos');const sr=expandRangeCol(args[0].trim());let t=0;for(let i=0;i<sr.length;i++){let m=true;for(let j=1;j<args.length;j+=2){const cr=expandRangeCol(args[j].trim());const cv=resVal(args[j+1]);if(String(cr[i]).toLowerCase()!==String(cv).toLowerCase()){m=false;break;}}if(m)t+=(typeof sr[i]==='number'?sr[i]:0);}return t;}
+function resVal(expr){expr=expr.trim();if((expr.startsWith('"')&&expr.endsWith('"'))||(expr.startsWith("'")&&expr.endsWith("'")))return expr.slice(1,-1);if(!isNaN(expr)&&expr!=='')return parseFloat(expr);if(expr.match(/^[A-Z]+\d+$/i)){const v=cellVal(expr);if(v===undefined)throw new Error(`Celda ${expr.toUpperCase()} no existe`);return v;}return evalArith(expr);}
+function evalArith(expr){expr=expr.trim();let js=expr.replace(/([A-Z]+)(\d+)/gi,(m)=>{const v=cellVal(m);if(v===undefined)throw new Error(`Celda ${m.toUpperCase()} no existe`);return typeof v==='string'?`"${v}"`:v;});if(js.match(/[^0-9+\-*/().," \t]/))throw new Error('Caracteres no permitidos');try{return Function('"use strict";return('+js+')')();}catch(e){throw new Error('Error de calculo');}}
+
+function calcExam(inputId) {
+  const input=document.getElementById(inputId);const rId=inputId.replace('f','r');const rd=document.getElementById(rId);
+  const formula=input.value.trim();
+  if(!formula){rd.textContent='Esperando formula...';rd.className='result-display';delete rd.dataset.rawValue;checkExcelComplete();return;}
+  const result=evalFormula(formula);
+  if(result.error){rd.textContent=result.error;rd.className='result-display error';delete rd.dataset.rawValue;}
+  else{const d=typeof result.value==='number'?result.value.toLocaleString('es-CL',{maximumFractionDigits:2}):String(result.value);rd.textContent=d;rd.className='result-display calculated';rd.dataset.rawValue=result.value;}
+  checkExcelComplete();
+}
+
+function checkExcelComplete(){
+  let done=true;
+  ['ep1r','ep2r','ep3r','ep4r','ep5r'].forEach(id=>{const el=document.getElementById(id);if(!el||el.dataset.rawValue===undefined)done=false;});
+  const btn=document.getElementById('btnNextToReasoning');
+  if(done){btn.disabled=false;btn.className='btn btn-primary btn-block';btn.textContent='Avanzar a Seccion 3: Razonamiento >';}
+}
+
+// Correct answers for Excel (computed from cells)
+function getExcelAnswers() {
+  const c = excelCells;
+  return {
+    ep1r: c.B2 + c.C2 + c.D2, // SUMA abarrotes
+    ep2r: c.C11, // BUSCARV CAT-CA → margen carnes = 0.28
+    ep3r: c.B3 * c.C10, // Lacteos Enero * margen lacteos
+    ep4r: c.B2 + c.B6, // Abarrotes Enero + Bebidas Enero (SUMAR.SI.CONJUNTO workaround)
+    ep5r: c.B16*c.C16 + c.B17*c.C17 + c.B18*c.C18, // Total sueldos
+  };
+}
+
+// =====================================================
+// SECCION 3: RAZONAMIENTO
+// =====================================================
+function generateReasoning() {
+  scenarioIdx = seed % SCENARIOS.length;
+  const sc = SCENARIOS[scenarioIdx];
+  const container = document.getElementById('reasoningContainer');
+
+  container.innerHTML = `<div class="card">
+    <h3>${sc.title}</h3>
+    <div class="reasoning-context">${sc.context}</div>
+
+    <div class="reasoning-q">
+      <label>1. ¿Que indicadores (KPIs) utilizarias para diagnosticar y monitorear el problema? Justifica al menos 3 indicadores.</label>
+      <textarea id="reason1" placeholder="Escribe tu respuesta aqui..." oninput="checkReasoningComplete();updateCharCount(this,'cc1')"></textarea>
+      <div class="char-count" id="cc1">0 caracteres</div>
+    </div>
+
+    <div class="reasoning-q">
+      <label>2. ¿Que hard skills y soft skills del perfil ICI necesitarias para abordar esta situacion? Menciona al menos 2 de cada tipo y explica por que.</label>
+      <textarea id="reason2" placeholder="Escribe tu respuesta aqui..." oninput="checkReasoningComplete();updateCharCount(this,'cc2')"></textarea>
+      <div class="char-count" id="cc2">0 caracteres</div>
+    </div>
+
+    <div class="reasoning-q">
+      <label>3. ¿Que solucion integral propondrias? Describe tu plan de accion con al menos 3 pasos concretos.</label>
+      <textarea id="reason3" placeholder="Escribe tu respuesta aqui..." oninput="checkReasoningComplete();updateCharCount(this,'cc3')"></textarea>
+      <div class="char-count" id="cc3">0 caracteres</div>
+    </div>
+  </div>`;
+}
+
+function updateCharCount(textarea, countId) {
+  document.getElementById(countId).textContent = textarea.value.length + ' caracteres';
+}
+
+function checkReasoningComplete() {
+  const r1 = document.getElementById('reason1')?.value.trim().length > 20;
+  const r2 = document.getElementById('reason2')?.value.trim().length > 20;
+  const r3 = document.getElementById('reason3')?.value.trim().length > 20;
+  const btn = document.getElementById('btnSubmitExam');
+  if (r1 && r2 && r3) {
+    btn.disabled = false;
+    btn.className = 'btn btn-success btn-block';
+    btn.textContent = 'Enviar Prueba';
+  } else {
+    btn.disabled = true;
+    btn.className = 'btn btn-block';
+    btn.textContent = 'Completar todas las respuestas para enviar';
+  }
+}
+
+// =====================================================
+// ENVIAR PRUEBA
+// =====================================================
+function enviarPrueba(forced) {
+  if (examSubmitted) return;
+  if (!forced && !confirm('¿Estas seguro que deseas enviar tu prueba? No podras modificar tus respuestas.')) return;
+  examSubmitted = true;
+  clearInterval(timerInterval);
+
+  // Grade MC
+  let mcCorrect = 0;
+  MC_BANK.forEach(q => { if (mcAnswers[q.id] === q.correct) mcCorrect++; });
+
+  // Grade Excel
+  const exAns = getExcelAnswers();
+  let exCorrect = 0;
+  ['ep1r','ep2r','ep3r','ep4r','ep5r'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || el.dataset.rawValue === undefined) return;
+    const uv = parseFloat(el.dataset.rawValue);
+    const cv = exAns[id];
+    if (!isNaN(uv) && Math.abs(uv - cv) <= Math.abs(cv * 0.005) + 0.5) exCorrect++;
+  });
+
+  // Calculate grade
+  const mcPct = mcCorrect / 8;
+  const exPct = exCorrect / 5;
+  const notaParcial = 1.0 + 6.0 * (mcPct * (1/3) + exPct * (1/3));
+  // Reasoning is manual, so show partial
+
+  const code = generateCode();
+
+  // Show results
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('resultPanel').classList.add('show');
+  document.getElementById('resultInfo').innerHTML = `<strong>${studentName}</strong> (${studentRut})`;
+  document.getElementById('resultCode').textContent = code;
+  document.getElementById('resultDetail').innerHTML =
+    `MC: ${mcCorrect}/8 | Excel: ${exCorrect}/5 | Razonamiento: pendiente revision profesor<br>` +
+    `Nota parcial (sin razonamiento): <strong>${notaParcial.toFixed(1)}</strong> / Nota final: asignada por profesor`;
+
+  for (let i = 1; i <= 3; i++) document.getElementById('prog' + i).classList.add('done');
+  window.scrollTo(0, 0);
+}
+
+function generateCode() {
+  let mcCorrect = 0;
+  MC_BANK.forEach(q => { if (mcAnswers[q.id] === q.correct) mcCorrect++; });
+  const exAns = getExcelAnswers();
+  let exCorrect = 0;
+  ['ep1r','ep2r','ep3r','ep4r','ep5r'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || el.dataset.rawValue === undefined) return;
+    const uv = parseFloat(el.dataset.rawValue);
+    if (!isNaN(uv) && Math.abs(uv - exAns[id]) <= Math.abs(exAns[id] * 0.005) + 0.5) exCorrect++;
+  });
+
+  const data = `${studentRut}-MC${mcCorrect}-EX${exCorrect}-PP1ICI2026`;
+  let hash = 0;
+  for (let i = 0; i < data.length; i++) hash = ((hash << 5) - hash) + data.charCodeAt(i) | 0;
+  return `${studentRut.replace(/[.\-]/g,'').slice(-4)}-${mcCorrect}${exCorrect}-${Math.abs(hash).toString(36).toUpperCase().slice(0,4)}`;
+}
+
+// =====================================================
+// ENVIO
+// =====================================================
+const PROF_EMAIL = 'ingiciuls@gmail.com';
+
+function buildMsg(bold) {
+  const b = bold ? '*' : '';
+  let mcCorrect = 0;
+  MC_BANK.forEach(q => { if (mcAnswers[q.id] === q.correct) mcCorrect++; });
+  const exAns = getExcelAnswers();
+  let exCorrect = 0;
+  ['ep1r','ep2r','ep3r','ep4r','ep5r'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || el.dataset.rawValue === undefined) return;
+    const uv = parseFloat(el.dataset.rawValue);
+    if (!isNaN(uv) && Math.abs(uv - exAns[id]) <= Math.abs(exAns[id] * 0.005) + 0.5) exCorrect++;
+  });
+
+  const code = document.getElementById('resultCode').textContent;
+  let msg = `${b}PP1 ICI - ULS 2026${b}\n`;
+  msg += `Alumno: ${b}${studentName}${b}\nRUT: ${studentRut}\nCodigo: ${b}${code}${b}\n`;
+  msg += `MC: ${mcCorrect}/8 | Excel: ${exCorrect}/5\n`;
+  msg += `Escenario razonamiento: ${SCENARIOS[scenarioIdx].title}\n`;
+
+  msg += `\n--- SELECCION MULTIPLE ---\n`;
+  mcOrder.forEach((qIdx, i) => {
+    const q = MC_BANK[qIdx];
+    const ans = mcAnswers[q.id] || '(sin respuesta)';
+    const correct = q.correct;
+    msg += `${i+1}. ${ans === correct ? 'OK' : 'MAL'} (respondio: ${ans}, correcta: ${correct})\n`;
+  });
+
+  msg += `\n--- CASO EXCEL ---\n`;
+  ['ep1','ep2','ep3','ep4','ep5'].forEach((id, i) => {
+    const f = document.getElementById(id+'f')?.value.trim() || '(vacio)';
+    const r = document.getElementById(id+'r')?.textContent || '(vacio)';
+    msg += `${i+1}. Formula: ${f} | Resultado: ${r}\n`;
+  });
+
+  msg += `\n--- RAZONAMIENTO ---\n`;
+  msg += `Escenario: ${SCENARIOS[scenarioIdx].title}\n\n`;
+  msg += `1. INDICADORES:\n${document.getElementById('reason1')?.value || '(vacio)'}\n\n`;
+  msg += `2. HARD/SOFT SKILLS:\n${document.getElementById('reason2')?.value || '(vacio)'}\n\n`;
+  msg += `3. SOLUCION PROPUESTA:\n${document.getElementById('reason3')?.value || '(vacio)'}\n`;
+
+  return msg;
+}
+
+function sendEmail() {
+  const code = document.getElementById('resultCode').textContent;
+  const subject = `PP1 ICI - ${studentName} - ${studentRut} - ${code}`;
+  window.open(`mailto:${PROF_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(buildMsg(false))}`, '_self');
+}
+function sendWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(buildMsg(true))}`, '_blank'); }
+function copyResult() {
+  const msg = buildMsg(false);
+  navigator.clipboard.writeText(msg).then(() => alert('Copiado.')).catch(() => {
+    const ta = document.createElement('textarea'); ta.value = msg; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert('Copiado.');
+  });
+}
+
+// =====================================================
+// MODO PROFESOR
+// =====================================================
+function toggleProf() { document.getElementById('profPanel').classList.toggle('show'); }
+function unlockProf() {
+  if (document.getElementById('profPass').value === 'pp1ici2026') {
+    document.getElementById('profContent').style.display = 'block';
+    document.getElementById('profPass').parentElement.style.display = 'none';
+    showProfInfo();
+  } else alert('Clave incorrecta');
+}
+
+function showProfInfo() {
+  let mcHtml = '<ol>';
+  MC_BANK.forEach(q => { mcHtml += `<li><strong>${q.correct.toUpperCase()}</strong> — ${q.text.substring(0,80)}...</li>`; });
+  mcHtml += '</ol>';
+  document.getElementById('profMCAnswers').innerHTML = mcHtml;
+
+  document.getElementById('profExcelAnswers').innerHTML =
+    '<p><strong>Nota:</strong> Los valores varian por alumno (multiplicador basado en RUT). Las formulas correctas son las mismas, los resultados cambian.</p>' +
+    '<ol><li>SUMA(B2:D2) — Total Abarrotes trimestre</li>' +
+    '<li>BUSCARV("CAT-CA";A9:C13;3;0) — Margen Carnes = 0.28</li>' +
+    '<li>B3*C10 — Costo Lacteos Enero</li>' +
+    '<li>SUMAR.SI.CONJUNTO para Abarrotes + Bebidas Enero</li>' +
+    '<li>B16*C16+B17*C17+B18*C18 — Total sueldos</li></ol>';
+
+  let scHtml = '<ol>';
+  SCENARIOS.forEach((s,i) => { scHtml += `<li><strong>${s.title}</strong> — Asignado a RUT donde seed%4=${i}</li>`; });
+  scHtml += '</ol><p>El razonamiento es texto libre, requiere revision manual.</p>';
+  document.getElementById('profReasoningInfo').innerHTML = scHtml;
+}
+
+function verifyCode() {
+  const code = document.getElementById('profCodeInput').value.trim().toUpperCase();
+  const rd = document.getElementById('profResultDiv');
+  const match = code.match(/^(\d{4})-(\d)(\d)-([A-Z0-9]+)$/);
+  if (!match) { rd.innerHTML = '<div class="prof-result invalid"><strong>Codigo invalido.</strong></div>'; return; }
+  const [, rutEnd, mc, ex, hash] = match;
+  const mcN = parseInt(mc), exN = parseInt(ex);
+  const mcPct = mcN/8, exPct = exN/5;
+  const notaParcial = 1.0 + 6.0 * (mcPct*(1/3) + exPct*(1/3));
+  rd.innerHTML = `<div class="prof-result valid">
+    <strong>MC: ${mcN}/8 | Excel: ${exN}/5</strong><br>
+    Nota parcial (sin razonamiento): <strong>${notaParcial.toFixed(1)}</strong><br>
+    <em>Nota final = 1.0 + 6.0 * (${mcPct.toFixed(2)}*0.333 + ${exPct.toFixed(2)}*0.333 + razonamiento*0.333)</em><br>
+    Para nota 4.0 minimo, razonamiento necesita: <strong>${Math.max(0, ((3.0/6.0 - mcPct*0.333 - exPct*0.333)/0.333)*100).toFixed(0)}%</strong>
+  </div>`;
+}
+</script>
+</body>
+</html>
