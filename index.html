@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafío Excel - Analista ICI</title>
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent: #2980b9;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: #333;
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    padding: 20px 30px;
+    text-align: center;
+  }
+  .header h1 { font-size: 1.6rem; margin-bottom: 5px; }
+  .header p { opacity: 0.85; font-size: 0.95rem; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+  /* Registro grupo */
+  .group-register {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+  .group-register h2 { color: var(--primary); margin-bottom: 15px; }
+  .form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .form-row label { font-weight: 600; min-width: 120px; display: flex; align-items: center; }
+  .form-row input, .form-row select {
+    flex: 1; padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px;
+    font-size: 1rem; min-width: 200px;
+  }
+  .form-row input:focus, .form-row select:focus { border-color: var(--accent); outline: none; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .tab-btn {
+    flex: 1; padding: 14px; border: none; border-radius: 10px;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+    transition: all 0.3s;
+  }
+  .tab-btn.active { background: var(--accent); color: white; transform: scale(1.02); }
+  .tab-btn:not(.active) { background: #dde4ed; color: var(--primary); }
+  .tab-btn:hover:not(.active) { background: #c5d0de; }
+
+  /* Caso */
+  .caso { display: none; }
+  .caso.active { display: block; }
+  .caso-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+  .caso-card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.15rem; }
+  .context-box {
+    background: #eaf2fb;
+    border-left: 4px solid var(--accent);
+    padding: 15px 18px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+
+  /* Tablas de datos */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 0.9rem;
+  }
+  .data-table th {
+    background: var(--primary);
+    color: white;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .data-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .data-table tr:nth-child(even) { background: #f8f9fa; }
+  .data-table tr:hover { background: #e8f0fe; }
+
+  /* Preguntas */
+  .pregunta {
+    background: #fafbfc;
+    border: 2px solid #e0e5ec;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 14px;
+    transition: border-color 0.3s;
+  }
+  .pregunta:focus-within { border-color: var(--accent); }
+  .pregunta-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .pregunta-num {
+    background: var(--accent);
+    color: white;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .pregunta-text { font-weight: 600; color: var(--primary); }
+  .hint { color: #666; font-size: 0.85rem; margin-bottom: 8px; font-style: italic; }
+  .answer-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .answer-group label { font-size: 0.85rem; color: #555; min-width: 80px; display: flex; align-items: center; }
+  .answer-input {
+    flex: 1; padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px;
+    font-family: 'Consolas', 'Courier New', monospace; font-size: 0.95rem;
+    min-width: 150px;
+  }
+  .answer-input:focus { border-color: var(--accent); outline: none; }
+  .answer-input.correct { border-color: var(--success); background: #eafaf1; }
+  .answer-input.incorrect { border-color: var(--danger); background: #fdf0ef; }
+
+  /* Botones */
+  .btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #2471a3; transform: translateY(-1px); }
+  .btn-success { background: var(--success); color: white; }
+  .btn-success:hover { background: #219a52; }
+  .btn-warning { background: var(--warning); color: white; }
+  .btn-warning:hover { background: #d68910; }
+  .btn-whatsapp { background: #25D366; color: white; font-size: 1.1rem; padding: 16px 30px; }
+  .btn-whatsapp:hover { background: #1ebe57; transform: translateY(-2px); }
+  .btn-block { width: 100%; }
+
+  /* Resultado */
+  .result-panel {
+    display: none;
+    background: linear-gradient(135deg, var(--primary), #2c3e50);
+    color: white;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    margin-top: 20px;
+  }
+  .result-panel.show { display: block; }
+  .result-code {
+    font-family: 'Consolas', monospace;
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: 6px;
+    background: rgba(255,255,255,0.15);
+    padding: 15px 30px;
+    border-radius: 10px;
+    margin: 15px 0;
+    display: inline-block;
+  }
+  .result-score { font-size: 1.3rem; margin: 10px 0; }
+  .result-detail { font-size: 0.9rem; opacity: 0.8; }
+
+  /* Modo profesor */
+  .prof-mode {
+    display: none;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+  .prof-mode.show { display: block; }
+  .prof-input { display: flex; gap: 10px; margin-bottom: 15px; }
+  .prof-input input { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 1.2rem; letter-spacing: 3px; text-transform: uppercase; }
+  .prof-result { padding: 15px; border-radius: 8px; margin-top: 10px; }
+  .prof-result.valid { background: #eafaf1; border: 2px solid var(--success); }
+  .prof-result.invalid { background: #fdf0ef; border: 2px solid var(--danger); }
+
+  /* Toggle profesor */
+  .prof-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 100;
+    transition: transform 0.3s;
+  }
+  .prof-toggle:hover { transform: scale(1.1); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .badge-formula { background: #e8f0fe; color: var(--accent); }
+  .badge-result { background: #eafaf1; color: var(--success); }
+
+  .section-title {
+    font-size: 1.1rem;
+    color: var(--primary);
+    margin: 20px 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e0e5ec;
+  }
+
+  /* Scroll horizontal para tablas en celular */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  @media (max-width: 600px) {
+    .container { padding: 10px; }
+    .form-row { flex-direction: column; }
+    .form-row label { min-width: auto; }
+    .form-row input, .form-row select { min-width: 0; width: 100%; }
+    .answer-group { flex-direction: column; }
+    .answer-group label { min-width: auto; }
+    .answer-input { min-width: 0; width: 100%; font-size: 0.9rem; }
+    .header h1 { font-size: 1.2rem; }
+    .header p { font-size: 0.8rem; }
+    .caso-card { padding: 15px; }
+    .caso-card h3 { font-size: 1rem; }
+    .context-box { padding: 12px; font-size: 0.9rem; }
+    .data-table { font-size: 0.78rem; }
+    .data-table th, .data-table td { padding: 6px 8px; white-space: nowrap; }
+    .tabs { flex-direction: column; gap: 6px; }
+    .tab-btn { padding: 12px; font-size: 0.9rem; }
+    .pregunta { padding: 14px; }
+    .pregunta-text { font-size: 0.9rem; }
+    .hint { font-size: 0.8rem; }
+    .result-code { font-size: 1.6rem; letter-spacing: 3px; padding: 12px 20px; }
+    .url-display { font-size: 1rem; }
+    .btn { padding: 12px 20px; font-size: 0.95rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Desafio Excel &mdash; Analista ICI en Accion</h1>
+  <p>Sesion 07 &bull; Introduccion a la Ingenieria Civil Industrial &bull; ULS 2026</p>
+</div>
+
+<div class="container">
+
+  <!-- REGISTRO -->
+  <div class="group-register" id="registerPanel">
+    <h2>Registro del Grupo</h2>
+    <div class="form-row">
+      <label>N&deg; de Grupo:</label>
+      <select id="grupoNum">
+        <option value="">Seleccionar...</option>
+        <option value="1">Grupo 1</option><option value="2">Grupo 2</option>
+        <option value="3">Grupo 3</option><option value="4">Grupo 4</option>
+        <option value="5">Grupo 5</option><option value="6">Grupo 6</option>
+        <option value="7">Grupo 7</option><option value="8">Grupo 8</option>
+        <option value="9">Grupo 9</option><option value="10">Grupo 10</option>
+        <option value="11">Grupo 11</option><option value="12">Grupo 12</option>
+        <option value="13">Grupo 13</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Integrantes:</label>
+      <input type="text" id="integrantes" placeholder="Apellidos separados por coma (ej: Perez, Lopez, Diaz, Soto)">
+    </div>
+    <br>
+    <button class="btn btn-primary btn-block" onclick="startChallenge()">Comenzar Desafio</button>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL (oculto hasta registro) -->
+  <div id="mainContent" style="display:none;">
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('caso1')">Caso 1: Planta Minera</button>
+      <button class="tab-btn" onclick="switchTab('caso2')">Caso 2: Empresa Logistica</button>
+    </div>
+
+    <!-- ==================== CASO 1 ==================== -->
+    <div class="caso active" id="caso1">
+      <div class="caso-card">
+        <h3>Caso 1: Analista de Produccion &mdash; Minera Cerro Brillante</h3>
+        <div class="context-box">
+          <strong>Contexto:</strong> Eres analista de produccion en <em>Minera Cerro Brillante</em>, ubicada en la Region de Coquimbo.
+          Tu jefe, el Gerente de Operaciones, necesita un reporte urgente del primer trimestre 2026.
+          Tienes los siguientes datos en tu planilla Excel y debes generar los calculos y reportes solicitados.
+        </div>
+
+        <h4 class="section-title">Tabla 1: Produccion mensual por mineral (toneladas)</h4>
+        <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Mes</th><th>Cobre</th><th>Oro (kg)</th><th>Molibdeno</th><th>Plata (kg)</th></tr>
+          <tr><td>Enero</td><td>12,500</td><td>85</td><td>340</td><td>1,200</td></tr>
+          <tr><td>Febrero</td><td>11,800</td><td>92</td><td>310</td><td>1,350</td></tr>
+          <tr><td>Marzo</td><td>13,200</td><td>78</td><td>365</td><td>1,100</td></tr>
+        </table>
+        </div>
+
+        <h4 class="section-title">Tabla 2: Precios de venta por unidad (USD)</h4>
+        <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Codigo Mineral</th><th>Mineral</th><th>Precio USD/ton</th><th>Categoria</th></tr>
+          <tr><td>CU-01</td><td>Cobre</td><td>8,500</td><td>Base</td></tr>
+          <tr><td>AU-01</td><td>Oro</td><td>62,000</td><td>Precioso</td></tr>
+          <tr><td>MO-01</td><td>Molibdeno</td><td>45,000</td><td>Especial</td></tr>
+          <tr><td>AG-01</td><td>Plata</td><td>780</td><td>Precioso</td></tr>
+        </table>
+        </div>
+
+        <h4 class="section-title">Tabla 3: Costos operacionales mensuales (USD)</h4>
+        <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Mes</th><th>Energia</th><th>Mano de Obra</th><th>Mantencion</th><th>Insumos</th></tr>
+          <tr><td>Enero</td><td>2,800,000</td><td>4,500,000</td><td>1,200,000</td><td>980,000</td></tr>
+          <tr><td>Febrero</td><td>2,650,000</td><td>4,500,000</td><td>1,350,000</td><td>1,020,000</td></tr>
+          <tr><td>Marzo</td><td>2,900,000</td><td>4,500,000</td><td>1,100,000</td><td>1,050,000</td></tr>
+        </table>
+        </div>
+      </div>
+
+      <!-- PREGUNTAS CASO 1 -->
+      <div class="caso-card">
+        <h3>Preguntas &mdash; Caso 1</h3>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">1</span>
+            <span class="pregunta-text">Produccion total de Cobre en el trimestre (toneladas)</span>
+          </div>
+          <p class="hint">Formula requerida: SUMA &nbsp; <span class="badge badge-formula">SUMA</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c1p1f" placeholder="=SUMA(...)">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c1p1r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">2</span>
+            <span class="pregunta-text">Ingreso total por venta de Cobre en Enero (USD)</span>
+          </div>
+          <p class="hint">Produccion x Precio &nbsp; <span class="badge badge-formula">MULTIPLICACION</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c1p2f" placeholder="=celda*celda">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c1p2r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">3</span>
+            <span class="pregunta-text">Costo operacional total de Febrero (USD)</span>
+          </div>
+          <p class="hint">Sumar todos los costos del mes &nbsp; <span class="badge badge-formula">SUMA</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c1p3f" placeholder="=SUMA(...)">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c1p3r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">4</span>
+            <span class="pregunta-text">Usando BUSCARV, obtener el precio del Molibdeno buscando por codigo "MO-01"</span>
+          </div>
+          <p class="hint">Buscar en Tabla 2 &nbsp; <span class="badge badge-formula">BUSCARV</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c1p4f" placeholder="=BUSCARV(...)">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c1p4r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">5</span>
+            <span class="pregunta-text">Margen operacional de Enero: Ingresos totales (todos los minerales) menos Costos totales de Enero</span>
+          </div>
+          <p class="hint">Calcular ingreso por cada mineral, sumar, y restar costos &nbsp; <span class="badge badge-formula">MULTIPLICACION + SUMA + RESTA</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c1p5f" placeholder="=(...) - (...)">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c1p5r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">6</span>
+            <span class="pregunta-text">Generar el codigo de reporte concatenando: "RPT-" + Mes + "-" + Mineral principal. Ejemplo resultado: RPT-Enero-Cobre</span>
+          </div>
+          <p class="hint">Para el mes de Enero y mineral Cobre &nbsp; <span class="badge badge-formula">CONCATENAR</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c1p6f" placeholder='=CONCATENAR(...) o ="RPT-"&...'>
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="text" class="answer-input" id="c1p6r" placeholder="Texto resultante">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">7</span>
+            <span class="pregunta-text">Costo promedio mensual de Energia en el trimestre (USD)</span>
+          </div>
+          <p class="hint">Suma de energia / 3 meses &nbsp; <span class="badge badge-formula">SUMA + DIVISION</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c1p7f" placeholder="=SUMA(...)/3">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c1p7r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== CASO 2 ==================== -->
+    <div class="caso" id="caso2">
+      <div class="caso-card">
+        <h3>Caso 2: Analista de Costos &mdash; Transportes del Norte SpA</h3>
+        <div class="context-box">
+          <strong>Contexto:</strong> Trabajas como analista de costos en <em>Transportes del Norte SpA</em>, empresa de logistica
+          que opera rutas entre La Serena, Santiago, Antofagasta y Copiapo.
+          La Gerenta de Finanzas necesita un analisis de rentabilidad por ruta y tipo de carga del Q1 2026.
+        </div>
+
+        <h4 class="section-title">Tabla 1: Registro de viajes Q1 2026</h4>
+        <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>ID Viaje</th><th>Ruta</th><th>Tipo Carga</th><th>Mes</th><th>Ingreso (CLP)</th><th>Km</th></tr>
+          <tr><td>V001</td><td>LS-SCL</td><td>Refrigerada</td><td>Enero</td><td>2,800,000</td><td>470</td></tr>
+          <tr><td>V002</td><td>LS-SCL</td><td>General</td><td>Enero</td><td>1,500,000</td><td>470</td></tr>
+          <tr><td>V003</td><td>LS-ANT</td><td>Minera</td><td>Enero</td><td>3,200,000</td><td>850</td></tr>
+          <tr><td>V004</td><td>LS-COP</td><td>General</td><td>Febrero</td><td>1,100,000</td><td>330</td></tr>
+          <tr><td>V005</td><td>LS-SCL</td><td>Refrigerada</td><td>Febrero</td><td>2,900,000</td><td>470</td></tr>
+          <tr><td>V006</td><td>LS-ANT</td><td>Minera</td><td>Febrero</td><td>3,500,000</td><td>850</td></tr>
+          <tr><td>V007</td><td>LS-COP</td><td>Refrigerada</td><td>Marzo</td><td>1,800,000</td><td>330</td></tr>
+          <tr><td>V008</td><td>LS-SCL</td><td>General</td><td>Marzo</td><td>1,600,000</td><td>470</td></tr>
+          <tr><td>V009</td><td>LS-ANT</td><td>General</td><td>Marzo</td><td>2,100,000</td><td>850</td></tr>
+          <tr><td>V010</td><td>LS-SCL</td><td>Minera</td><td>Marzo</td><td>2,400,000</td><td>470</td></tr>
+        </table>
+        </div>
+
+        <h4 class="section-title">Tabla 2: Costos por kilometro segun tipo de carga (CLP/km)</h4>
+        <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Codigo Carga</th><th>Tipo Carga</th><th>Costo CLP/km</th><th>Requiere Seguro</th></tr>
+          <tr><td>TC-REF</td><td>Refrigerada</td><td>1,800</td><td>Si</td></tr>
+          <tr><td>TC-GEN</td><td>General</td><td>1,200</td><td>No</td></tr>
+          <tr><td>TC-MIN</td><td>Minera</td><td>2,500</td><td>Si</td></tr>
+        </table>
+        </div>
+
+        <h4 class="section-title">Tabla 3: Seguros por ruta (CLP por viaje)</h4>
+        <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Ruta</th><th>Seguro por viaje</th></tr>
+          <tr><td>LS-SCL</td><td>180,000</td></tr>
+          <tr><td>LS-ANT</td><td>320,000</td></tr>
+          <tr><td>LS-COP</td><td>120,000</td></tr>
+        </table>
+        </div>
+      </div>
+
+      <!-- PREGUNTAS CASO 2 -->
+      <div class="caso-card">
+        <h3>Preguntas &mdash; Caso 2</h3>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">1</span>
+            <span class="pregunta-text">Ingreso total de todos los viajes con ruta "LS-SCL" Y tipo de carga "Refrigerada"</span>
+          </div>
+          <p class="hint">Dos criterios simultaneos &nbsp; <span class="badge badge-formula">SUMAR.SI.CONJUNTO</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c2p1f" placeholder="=SUMAR.SI.CONJUNTO(...)">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c2p1r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">2</span>
+            <span class="pregunta-text">Usando BUSCARV con codigo "TC-MIN", obtener el costo por km de carga Minera</span>
+          </div>
+          <p class="hint">Buscar en Tabla 2 &nbsp; <span class="badge badge-formula">BUSCARV</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c2p2f" placeholder="=BUSCARV(...)">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c2p2r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">3</span>
+            <span class="pregunta-text">Costo total del viaje V003 (costo por km * km recorridos + seguro si aplica)</span>
+          </div>
+          <p class="hint">V003: Minera, 850 km, ruta LS-ANT. Minera requiere seguro. &nbsp; <span class="badge badge-formula">MULTIPLICACION + SUMA + BUSCARV</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c2p3f" placeholder="=costo_km * km + seguro">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c2p3r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">4</span>
+            <span class="pregunta-text">Utilidad del viaje V003 (Ingreso - Costo total)</span>
+          </div>
+          <p class="hint">Ingreso V003 menos el costo calculado en pregunta anterior &nbsp; <span class="badge badge-formula">RESTA</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c2p4f" placeholder="=ingreso - costo">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c2p4r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">5</span>
+            <span class="pregunta-text">Ingreso promedio por km de la ruta LS-SCL (suma ingresos LS-SCL / total km LS-SCL)</span>
+          </div>
+          <p class="hint">Hay 5 viajes LS-SCL, todos de 470 km &nbsp; <span class="badge badge-formula">SUMAR.SI.CONJUNTO + DIVISION</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c2p5f" placeholder="=SUMAR.SI.CONJUNTO(...) / (5*470)">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c2p5r" placeholder="Valor numerico (puede tener decimales)">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">6</span>
+            <span class="pregunta-text">Generar el codigo de factura: "FAC-2026-" + ID del viaje + "-" + Tipo de carga. Para V001.</span>
+          </div>
+          <p class="hint">Resultado esperado: FAC-2026-V001-Refrigerada &nbsp; <span class="badge badge-formula">CONCATENAR</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c2p6f" placeholder='=CONCATENAR(...) o ="FAC-2026-"&...'>
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="text" class="answer-input" id="c2p6r" placeholder="Texto resultante">
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <div class="pregunta-header">
+            <span class="pregunta-num">7</span>
+            <span class="pregunta-text">Total de ingresos de carga "General" en el mes de "Marzo"</span>
+          </div>
+          <p class="hint">Dos criterios: tipo + mes &nbsp; <span class="badge badge-formula">SUMAR.SI.CONJUNTO</span></p>
+          <div class="answer-group">
+            <label>Formula:</label>
+            <input type="text" class="answer-input" id="c2p7f" placeholder="=SUMAR.SI.CONJUNTO(...)">
+          </div>
+          <br>
+          <div class="answer-group">
+            <label>Resultado:</label>
+            <input type="number" class="answer-input" id="c2p7r" placeholder="Valor numerico">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTON ENVIAR -->
+    <button class="btn btn-success btn-block" onclick="submitAnswers()" style="margin-top:10px;">
+      Enviar Respuestas y Generar Codigo
+    </button>
+
+    <!-- RESULTADO -->
+    <div class="result-panel" id="resultPanel">
+      <h2>Resultado del Grupo <span id="resultGrupo"></span></h2>
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-code" id="resultCode"></div>
+      <div class="result-detail" id="resultDetail"></div>
+      <br>
+      <div style="display:flex; flex-direction:column; gap:10px; align-items:center; margin-top:10px;">
+        <button class="btn btn-whatsapp btn-block" onclick="sendEmail()" style="background:#EA4335; max-width:400px;">
+          <span style="font-size:1.3rem;">&#9993;</span> Enviar Resultado por Correo
+        </button>
+        <button class="btn btn-whatsapp btn-block" onclick="sendWhatsApp()" style="max-width:400px;">
+          <span style="font-size:1.3rem;">&#128172;</span> Enviar por WhatsApp
+        </button>
+        <button class="btn btn-whatsapp btn-block" onclick="copyResult()" style="background:#3b82f6; max-width:400px;">
+          <span style="font-size:1.3rem;">&#128203;</span> Copiar al Portapapeles
+        </button>
+      </div>
+      <p style="opacity:0.6; font-size:0.8rem; margin-top:10px;">Se abre su correo o WhatsApp con el mensaje listo. Solo presionen Enviar.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOTON PROFESOR -->
+<button class="prof-toggle" onclick="toggleProfMode()" title="Modo Profesor">&#9881;</button>
+
+<!-- PANEL PROFESOR -->
+<div class="prof-mode" id="profPanel">
+  <h2 style="color:var(--primary); margin-bottom:15px;">Modo Profesor (Clave: ici2026)</h2>
+  <div class="prof-input">
+    <input type="password" id="profPassword" placeholder="Clave de acceso">
+    <button class="btn btn-warning" onclick="unlockProf()">Desbloquear</button>
+  </div>
+  <div id="profContent" style="display:none;">
+    <h3>Verificar Codigo de Grupo</h3>
+    <div class="prof-input">
+      <input type="text" id="profCode" placeholder="Ingrese codigo del grupo" style="text-transform:uppercase;">
+      <button class="btn btn-primary" onclick="verifyCode()">Verificar</button>
+    </div>
+    <div id="profResult"></div>
+
+    <hr style="margin: 20px 0;">
+    <h3>Respuestas Correctas</h3>
+    <div style="background:#f8f9fa; padding:15px; border-radius:8px; font-size:0.9rem;">
+      <h4>Caso 1 - Minera Cerro Brillante</h4>
+      <ol>
+        <li><strong>Produccion Cobre trimestre:</strong> 37,500 ton (12500+11800+13200)</li>
+        <li><strong>Ingreso Cobre Enero:</strong> 106,250,000 USD (12500 * 8500)</li>
+        <li><strong>Costo total Febrero:</strong> 9,520,000 USD (2650000+4500000+1350000+1020000)</li>
+        <li><strong>Precio Molibdeno (BUSCARV):</strong> 45,000 USD</li>
+        <li><strong>Margen Enero:</strong> Ingresos: 12500*8500 + 85*62000 + 340*45000 + 1200*780 = 106,250,000 + 5,270,000 + 15,300,000 + 936,000 = 127,756,000. Costos: 2800000+4500000+1200000+980000 = 9,480,000. <strong>Margen = 118,276,000</strong></li>
+        <li><strong>Codigo reporte:</strong> RPT-Enero-Cobre</li>
+        <li><strong>Promedio energia:</strong> 2,783,333.33 ((2800000+2650000+2900000)/3)</li>
+      </ol>
+      <br>
+      <h4>Caso 2 - Transportes del Norte</h4>
+      <ol>
+        <li><strong>Ingresos LS-SCL + Refrigerada:</strong> 5,700,000 CLP (2800000+2900000)</li>
+        <li><strong>Costo/km Minera (BUSCARV):</strong> 2,500 CLP</li>
+        <li><strong>Costo V003:</strong> 2500*850 + 320000 = 2,125,000 + 320,000 = <strong>2,445,000</strong></li>
+        <li><strong>Utilidad V003:</strong> 3,200,000 - 2,445,000 = <strong>755,000</strong></li>
+        <li><strong>Ingreso promedio/km LS-SCL:</strong> (2,800,000+1,500,000+2,900,000+1,600,000+2,400,000) / (5 x 470) = 11,200,000 / 2,350 = <strong>4,765.96</strong></li>
+        <li><strong>Codigo factura:</strong> FAC-2026-V001-Refrigerada</li>
+        <li><strong>General + Marzo:</strong> 1,600,000 + 2,100,000 = <strong>3,700,000</strong></li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== RESPUESTAS CORRECTAS =====
+const ANSWERS = {
+  // Caso 1
+  c1p1r: { value: 37500, type: 'number', tolerance: 0 },
+  c1p2r: { value: 106250000, type: 'number', tolerance: 0 },
+  c1p3r: { value: 9520000, type: 'number', tolerance: 0 },
+  c1p4r: { value: 45000, type: 'number', tolerance: 0 },
+  c1p5r: { value: 118276000, type: 'number', tolerance: 0 },
+  c1p6r: { value: 'RPT-Enero-Cobre', type: 'text' },
+  c1p7r: { value: 2783333.33, type: 'number', tolerance: 1 },
+  // Caso 2
+  c2p1r: { value: 5700000, type: 'number', tolerance: 0 },
+  c2p2r: { value: 2500, type: 'number', tolerance: 0 },
+  c2p3r: { value: 2445000, type: 'number', tolerance: 0 },
+  c2p4r: { value: 755000, type: 'number', tolerance: 0 },
+  c2p5r: { value: 4765.96, type: 'number', tolerance: 1 },
+  c2p6r: { value: 'FAC-2026-V001-Refrigerada', type: 'text' },
+  c2p7r: { value: 3700000, type: 'number', tolerance: 0 },
+};
+
+// Caso 2 P5: hay 5 viajes LS-SCL (V001,V002,V005,V008,V010)
+// Recalcular: (2800000+1500000+2900000+1600000+2400000)/(5*470) = 11200000/2350 = 4765.957...
+
+let grupoRegistrado = '';
+let integrantesRegistrados = '';
+
+function startChallenge() {
+  const grupo = document.getElementById('grupoNum').value;
+  const integ = document.getElementById('integrantes').value.trim();
+  if (!grupo) { alert('Selecciona el numero de grupo'); return; }
+  if (!integ) { alert('Ingresa los apellidos de los integrantes'); return; }
+  grupoRegistrado = grupo;
+  integrantesRegistrados = integ;
+  document.getElementById('registerPanel').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+}
+
+function switchTab(casoId) {
+  document.querySelectorAll('.caso').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(casoId).classList.add('active');
+  const idx = casoId === 'caso1' ? 0 : 1;
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+}
+
+function evaluateAnswers() {
+  let correct = 0;
+  let total = Object.keys(ANSWERS).length;
+  let details = [];
+
+  for (const [id, answer] of Object.entries(ANSWERS)) {
+    const input = document.getElementById(id);
+    if (!input) continue;
+    const userVal = input.value.trim();
+    let isCorrect = false;
+
+    if (answer.type === 'number') {
+      const num = parseFloat(userVal);
+      if (!isNaN(num)) {
+        isCorrect = Math.abs(num - answer.value) <= (answer.tolerance || 0.5);
+      }
+    } else {
+      isCorrect = userVal.toLowerCase().replace(/\s+/g,'') === answer.value.toLowerCase().replace(/\s+/g,'');
+    }
+
+    if (isCorrect) {
+      correct++;
+      input.classList.add('correct');
+      input.classList.remove('incorrect');
+    } else if (userVal) {
+      input.classList.add('incorrect');
+      input.classList.remove('correct');
+    }
+  }
+
+  return { correct, total, pct: Math.round((correct / total) * 100) };
+}
+
+function generateCode(grupo, correct, total) {
+  // Genera un codigo verificable: G{grupo}-{correct}/{total}-{hash}
+  const data = `G${grupo}-${correct}-${total}-ICI2026`;
+  let hash = 0;
+  for (let i = 0; i < data.length; i++) {
+    const chr = data.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  const hexHash = Math.abs(hash).toString(36).toUpperCase().slice(0, 4);
+  return `G${grupo}-${correct}/${total}-${hexHash}`;
+}
+
+function submitAnswers() {
+  // Check formulas are filled
+  let formulasFilled = 0;
+  let formulasTotal = 0;
+  document.querySelectorAll('[id$="f"]').forEach(el => {
+    if (el.id.match(/c[12]p\df/)) {
+      formulasTotal++;
+      if (el.value.trim()) formulasFilled++;
+    }
+  });
+
+  if (formulasFilled < formulasTotal * 0.5) {
+    if (!confirm('Han completado menos de la mitad de las formulas. Desean enviar de todas formas?')) return;
+  }
+
+  const result = evaluateAnswers();
+  const code = generateCode(grupoRegistrado, result.correct, result.total);
+
+  document.getElementById('resultGrupo').textContent = grupoRegistrado;
+  document.getElementById('resultScore').textContent = `${result.correct} de ${result.total} correctas (${result.pct}%)`;
+  document.getElementById('resultCode').textContent = code;
+  document.getElementById('resultDetail').textContent = `Integrantes: ${integrantesRegistrados}`;
+  document.getElementById('resultPanel').classList.add('show');
+  document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth' });
+}
+
+function buildWhatsAppMessage() {
+  const code = document.getElementById('resultCode').textContent;
+  const score = document.getElementById('resultScore').textContent;
+
+  const c1Labels = [
+    'Produccion Cobre trimestre',
+    'Ingreso Cobre Enero',
+    'Costo total Febrero',
+    'Precio Molibdeno (BUSCARV)',
+    'Margen operacional Enero',
+    'Codigo reporte (CONCATENAR)',
+    'Promedio energia'
+  ];
+  const c2Labels = [
+    'Ingresos LS-SCL Refrigerada',
+    'Costo/km Minera (BUSCARV)',
+    'Costo total V003',
+    'Utilidad V003',
+    'Ingreso promedio/km LS-SCL',
+    'Codigo factura (CONCATENAR)',
+    'General + Marzo'
+  ];
+
+  let msg = `*DESAFIO EXCEL ICI - ULS 2026*\n`;
+  msg += `Grupo: *${grupoRegistrado}*\n`;
+  msg += `Integrantes: ${integrantesRegistrados}\n`;
+  msg += `Resultado: *${score}*\n`;
+  msg += `Codigo: *${code}*\n`;
+  msg += `\n--- CASO 1: MINERA ---\n`;
+  for (let i = 1; i <= 7; i++) {
+    const f = document.getElementById(`c1p${i}f`)?.value.trim() || '(vacio)';
+    const r = document.getElementById(`c1p${i}r`)?.value.trim() || '(vacio)';
+    msg += `${i}. ${c1Labels[i-1]}\n   Formula: ${f}\n   Resultado: ${r}\n`;
+  }
+  msg += `\n--- CASO 2: LOGISTICA ---\n`;
+  for (let i = 1; i <= 7; i++) {
+    const f = document.getElementById(`c2p${i}f`)?.value.trim() || '(vacio)';
+    const r = document.getElementById(`c2p${i}r`)?.value.trim() || '(vacio)';
+    msg += `${i}. ${c2Labels[i-1]}\n   Formula: ${f}\n   Resultado: ${r}\n`;
+  }
+
+  return msg;
+}
+
+// ===== CORREO PROFESOR =====
+const PROFESOR_EMAIL = 'ingiciuls@gmail.com';
+
+function sendEmail() {
+  const code = document.getElementById('resultCode').textContent;
+  const score = document.getElementById('resultScore').textContent;
+  const subject = `Desafio Excel ICI - Grupo ${grupoRegistrado} - ${code}`;
+  const body = buildWhatsAppMessage().replace(/\*/g, ''); // Sin asteriscos de WhatsApp
+  window.open(`mailto:${PROFESOR_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_self');
+}
+
+function sendWhatsApp() {
+  const msg = buildWhatsAppMessage();
+  const encoded = encodeURIComponent(msg);
+  window.open(`https://wa.me/?text=${encoded}`, '_blank');
+}
+
+function copyResult() {
+  const msg = buildWhatsAppMessage();
+  navigator.clipboard.writeText(msg).then(() => {
+    alert('Mensaje copiado. Peguenlo en el grupo de WhatsApp del curso.');
+  }).catch(() => {
+    // Fallback para navegadores que no soporten clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = msg;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('Mensaje copiado. Peguenlo en el grupo de WhatsApp del curso.');
+  });
+}
+
+// ===== MODO PROFESOR =====
+function toggleProfMode() {
+  const panel = document.getElementById('profPanel');
+  panel.classList.toggle('show');
+}
+
+function unlockProf() {
+  if (document.getElementById('profPassword').value === 'ici2026') {
+    document.getElementById('profContent').style.display = 'block';
+    document.getElementById('profPassword').parentElement.style.display = 'none';
+  } else {
+    alert('Clave incorrecta');
+  }
+}
+
+function verifyCode(inputCode) {
+  const code = inputCode || document.getElementById('profCode').value.trim().toUpperCase();
+  const resultDiv = document.getElementById('profResult');
+
+  // Parse code: G{grupo}-{correct}/{total}-{hash}
+  const match = code.match(/^G(\d+)-(\d+)\/(\d+)-([A-Z0-9]+)$/);
+  if (!match) {
+    resultDiv.innerHTML = '<div class="prof-result invalid"><strong>Codigo invalido.</strong> Formato esperado: G1-10/14-XXXX</div>';
+    return;
+  }
+
+  const [, grupo, correct, total, hash] = match;
+  const expectedCode = generateCode(grupo, parseInt(correct), parseInt(total));
+
+  if (expectedCode.toUpperCase() === code) {
+    const pct = Math.round((parseInt(correct) / parseInt(total)) * 100);
+    let emoji = pct >= 80 ? '&#9989;' : pct >= 50 ? '&#9888;' : '&#10060;';
+    resultDiv.innerHTML = `<div class="prof-result valid">
+      ${emoji} <strong>Codigo VALIDO</strong><br>
+      Grupo: ${grupo} | Correctas: ${correct}/${total} (${pct}%)<br>
+      <strong>Nota sugerida: ${(1 + 6 * (pct / 100)).toFixed(1)}</strong>
+    </div>`;
+  } else {
+    resultDiv.innerHTML = '<div class="prof-result invalid"><strong>&#10060; Codigo MANIPULADO o INVALIDO.</strong> El hash no coincide.</div>';
+  }
+}
+</script>
+
+</body>
+</html>
