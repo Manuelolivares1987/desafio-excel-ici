@@ -653,11 +653,11 @@ function generateExcel() {
 
   // Questions
   const excelQs = [
-    {id:'ep1', text:'Venta total de Abarrotes en el trimestre (CLP)', hint:'Suma Enero+Febrero+Marzo de Abarrotes (fila 2)', badge:'SUMA', ph:'=SUMA(B2:D2)'},
-    {id:'ep2', text:'Usando BUSCARV, obtener el margen de costo de "Carnes" buscando por código "CAT-CA"', hint:'Buscar en tabla de costos (A9:C13), devolver columna 3', badge:'BUSCARV', ph:'=BUSCARV("CAT-CA";A9:C13;3;0)'},
-    {id:'ep3', text:'Costo total de Lácteos en Enero: Venta Enero * Margen de costo', hint:'Venta Lácteos Enero (B3) multiplicado por margen (C10)', badge:'MULTIPLICACIÓN', ph:'=B3*C10'},
-    {id:'ep4', text:'Total de ventas de Enero solo para categorías "Abarrotes" y "Bebidas"', hint:'Sumar ventas de Enero donde categoría sea Abarrotes o Bebidas', badge:'SUMAR.SI.CONJUNTO', ph:'=SUMAR.SI.CONJUNTO(B2:B6;A2:A6;"Abarrotes")+SUMAR.SI.CONJUNTO(B2:B6;A2:A6;"Bebidas")'},
-    {id:'ep5', text:'Gasto total en sueldos de TODAS las sucursales (empleados * sueldo promedio de cada una, sumar todo)', hint:'Multiplicar empleados por sueldo en cada sucursal y sumar', badge:'MULT + SUMA', ph:'=B16*C16+B17*C17+B18*C18'},
+    {id:'ep1', text:'Venta total de Abarrotes en el trimestre (CLP)', hint:'Usa la función indicada para sumar los valores de la fila correspondiente', badge:'SUMA', ph:'Escribe tu fórmula aquí...'},
+    {id:'ep2', text:'Usando BUSCARV, obtener el margen de costo de "Carnes" buscando por código "CAT-CA"', hint:'Busca el código en la tabla de costos y devuelve la columna del margen', badge:'BUSCARV', ph:'Escribe tu fórmula aquí...'},
+    {id:'ep3', text:'Costo total de Lácteos en Enero: Venta Enero multiplicada por el Margen de costo', hint:'Identifica las celdas correctas de venta y margen, y multiplícalas', badge:'MULTIPLICACIÓN', ph:'Escribe tu fórmula aquí...'},
+    {id:'ep4', text:'Total de ventas de Enero solo para categorías "Abarrotes" y "Bebidas"', hint:'Necesitas sumar con criterio para cada categoría por separado', badge:'SUMAR.SI.CONJUNTO', ph:'Escribe tu fórmula aquí...'},
+    {id:'ep5', text:'Gasto total en sueldos de TODAS las sucursales (empleados x sueldo promedio de cada una, sumar todo)', hint:'Calcula el gasto de cada sucursal y luego suma los tres resultados', badge:'MULTIPLICACIÓN + SUMA', ph:'Escribe tu fórmula aquí...'},
   ];
 
   h += `<div class="card"><h3>Preguntas &mdash; Caso Excel</h3>`;
